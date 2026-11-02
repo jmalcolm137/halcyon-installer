@@ -1,8 +1,9 @@
 #!/bin/sh
 #
-# Chimera Linux live image creation tool
+# Halcyon Linux live image creation tool
 #
 # Copyright 2022 q66 <q66@chimera-linux.org>
+# Copyright 2026 Halcyon Linux developers
 #
 # License: BSD-2-Clause
 #
@@ -37,7 +38,7 @@ Options:
  -A APK       Override the apk tool (default: apk)
  -a ARCH      Generate an image for ARCH (must be runnable on current machine)
  -c CMDLINE   Extra kernel command line to append.
- -o FILE      Output a FILE (default: chimera-linux-ARCH-YYYYMMDD(-FLAVOR).iso)
+ -o FILE      Output a FILE (default: halcyon-linux-ARCH-YYYYMMDD(-FLAVOR).iso)
  -f FLAVOR    Flavor name to include in default iso name
  -r REPO      Path to apk repository.
  -k DIR       Path to apk repository public key directory.
@@ -125,7 +126,7 @@ ISO_VERSION=$(date '+%Y%m%d')
 
 # default output file
 if [ -z "$OUT_FILE" ]; then
-    OUT_FILE="chimera-linux-${APK_ARCH}-LIVE-${ISO_VERSION}${FLAVOR}.iso"
+    OUT_FILE="halcyon-linux-${APK_ARCH}-LIVE-${ISO_VERSION}${FLAVOR}.iso"
 fi
 
 if [ -z "$APK_REPO" ]; then
@@ -360,7 +361,7 @@ msg "Generating ISO image..."
 
 generate_menu() {
     sed \
-     -e "s|@@BOOT_TITLE@@|Chimera Linux|g" \
+     -e "s|@@BOOT_TITLE@@|Halcyon Linux|g" \
      -e "s|@@KERNFILE@@|${KERNFILE}|g" \
      -e "s|@@KERNVER@@|${KERNVER}|g" \
      -e "s|@@ARCH@@|${APK_ARCH}|g" \
@@ -372,18 +373,18 @@ generate_menu() {
 generate_iso_grub() {
     # because host grub would not have all the targets
     chroot "${HOST_DIR}" /usr/bin/grub-mkrescue -o /mnt/image.iso \
-        --product-name "Chimera Linux" \
+        --product-name "Halcyon Linux" \
         --product-version "${ISO_VERSION}" \
         --mbr-force-bootable \
         /mnt/image \
-        -volid "CHIMERA_LIVE"
+        -volid "HALCYON_LIVE"
 }
 
 # base args that will be present for any iso generation
 generate_iso_base() {
     chroot "${HOST_DIR}" /usr/bin/xorriso -as mkisofs -iso-level 3 \
         -rock -joliet -max-iso9660-filenames -omit-period -omit-version-number \
-        -relaxed-filenames -allow-lowercase -volid CHIMERA_LIVE \
+        -relaxed-filenames -allow-lowercase -volid HALCYON_LIVE \
         "$@" -o /mnt/image.iso /mnt/image
 }
 

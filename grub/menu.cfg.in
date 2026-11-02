@@ -3,7 +3,7 @@
 
 set pager="1"
 set timeout="10"
-set default="chimera-live"
+set default="halcyon-live"
 
 set locale_dir="${prefix}/locale"
 
@@ -13,12 +13,12 @@ if loadfont unicode; then
     insmod all_video
 fi
 
-menuentry "@@BOOT_TITLE@@ @@KERNVER@@ (@@ARCH@@)" --id chimera-live {
-    linux /live/@@KERNFILE@@ boot=live live-media=CHIMERA_LIVE dinit_skip_volumes init=/usr/bin/init loglevel=4 @@BOOT_CMDLINE@@
+menuentry "@@BOOT_TITLE@@ @@KERNVER@@ (@@ARCH@@)" --id halcyon-live {
+    linux /live/@@KERNFILE@@ boot=live live-media=HALCYON_LIVE dinit_skip_volumes init=/usr/bin/init loglevel=4 @@BOOT_CMDLINE@@
     initrd /live/initrd
 }
 
-menuentry "@@BOOT_TITLE@@ @@KERNVER@@ (@@ARCH@@) (RAM)" --id chimera-live-ram {
-    linux /live/@@KERNFILE@@ boot=live live-media=CHIMERA_LIVE dinit_skip_volumes toram init=/usr/bin/init loglevel=4 @@BOOT_CMDLINE@@
+menuentry "@@BOOT_TITLE@@ @@KERNVER@@ (@@ARCH@@) (RAM)" --id halcyon-live-ram {
+    linux /live/@@KERNFILE@@ boot=live live-media=HALCYON_LIVE dinit_skip_volumes toram init=/usr/bin/init loglevel=4 @@BOOT_CMDLINE@@
     initrd /live/initrd
 }

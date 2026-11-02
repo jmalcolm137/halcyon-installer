@@ -1,2 +1,4 @@
 build/
+build-halcyon/
+apk-cache/
 *.iso

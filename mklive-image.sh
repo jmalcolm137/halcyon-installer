@@ -31,7 +31,12 @@ if [ -z "$KERNEL_PKGS" ]; then
     fi
 fi
 
-readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${EXTRA_PKGS}"
+# Halcyon ships bcachefs support in the regular installation media. The
+# prebuilt kernel modules come from the halcyon-core repository and are
+# built against the same linux-stable release as the rest of the image.
+readonly FILESYSTEM_PKGS="bcachefs-tools linux-stable-bcachefs-bin"
+
+readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${EXTRA_PKGS}"
 
 case "$IMAGE" in
     minimal)

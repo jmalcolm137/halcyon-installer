@@ -1,6 +1,23 @@
-# chimera-live
+# halcyon-live
 
-This repository contains tooling to manage creation of Chimera images.
+This repository contains tooling to manage creation of Halcyon Linux images.
+It is a fork of the Chimera Linux `chimera-live` tooling. The image creation
+code is kept as close to upstream as possible.
+
+Halcyon installation media are built from the regular Chimera package
+repositories plus the `halcyon-core` repository from the sibling `cports`
+checkout. Installation images (`base`, `gnome` and `plasma`) include
+`bcachefs-tools` and the prebuilt `linux-stable-bcachefs-bin` kernel module,
+so the live environment can create, mount, fsck and repair bcachefs
+filesystems.
+
+The prebuilt module is built with `BCACHEFS_RUST=0`: Chimera's `linux-stable`
+is built without `CONFIG_RUST`, and the vendored Rust support in bcachefs
+1.39.7 generates a target specification that the current rustc rejects when
+the kernel's `CONFIG_RUSTC_VERSION` is 0. The C-only module is an upstream
+supported configuration and works with the current bcachefs on-disk format;
+newer bcachefs releases are expected to require `CONFIG_RUST`.
+
 They are mainly intended for handling of distro releases, but can be
 used by advanced users to create their own images. They are also useful
 for creating images for specific devices that are supported but not
@@ -24,6 +41,44 @@ The following high level scripts are available:
   rootfs tarballs
 
 More tools may be added over time.
+
+## Building the Halcyon installation ISO
+
+`build-halcyon-iso.sh` builds the bcachefs packages from the sibling `cports`
+checkout and then creates the installation ISO. It must be run as a regular
+user; it uses docker or podman for the root-only parts of `mklive.sh`.
+
+The following prerequisites must be available:
+
+* a `cports` checkout containing `halcyon-core`, by default `../cports`
+  (override with `HALCYON_CPORTS`)
+* a cbuild container for that checkout, by default `bldroot-halcyon`
+  (override with `HALCYON_BLDROOT`); the script bootstraps it if necessary
+* docker or podman
+
+Then run:
+
+```
+$ ./build-halcyon-iso.sh
+```
+
+The resulting image is
+`halcyon-linux-x86_64-LIVE-YYYYMMDD-plasma.iso` by default. Use
+`HALCYON_ARCH`, `HALCYON_IMAGE` (`base`, `gnome` or `plasma`) and
+`HALCYON_ISO` to change the architecture, image type or output path.
+
+`cbuild` is incremental, so re-running the script reuses already built
+packages. To assemble an ISO manually, run the following as root (the
+`halcyon-core` repository must already contain the bcachefs packages, and
+`keys` must contain the matching public key):
+
+```
+# ./mklive-image.sh -b plasma -- \
+    -r /path/to/cports/packages/halcyon-core \
+    -r https://repo.chimera-linux.org/current/main \
+    -r https://repo.chimera-linux.org/current/user \
+    -k keys -o halcyon-linux-x86_64-LIVE-$(date '+%Y%m%d')-plasma.iso
+```
 
 ## Bootstrapping the system with apk
 
