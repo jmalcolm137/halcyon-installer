@@ -2,11 +2,11 @@
 #
 # Build the Halcyon Linux installation ISO.
 #
-# The bcachefs packages are built from the sibling cports checkout (the
-# halcyon-core repository) with cbuild. The ISO itself is then assembled
-# with mklive-image.sh, which needs root for chroots and mounts; when this
-# script is not run as root it uses docker or podman to provide that
-# environment.
+# The bcachefs and Broadcom-wl packages are built from the sibling cports
+# checkout (the halcyon-core repository) with cbuild. The ISO itself is then
+# assembled with mklive-image.sh, which needs root for chroots and mounts;
+# when this script is not run as root it uses docker or podman to provide
+# that environment.
 #
 # Copyright 2026 Halcyon Linux developers
 #
@@ -55,6 +55,16 @@ msg "Building bcachefs userspace tools..."
 msg "Building the prebuilt bcachefs kernel module..."
 (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
     pkg halcyon-core/linux-stable-bcachefs-bin)
+
+if [ "$ARCH" = "x86_64" ]; then
+    msg "Building the Broadcom-wl driver..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-core/broadcom-wl)
+
+    msg "Building the prebuilt Broadcom-wl kernel module..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-core/linux-stable-broadcom-wl-bin)
+fi
 
 REPO="$CPORTS/packages/halcyon-core"
 [ -f "$REPO/$ARCH/APKINDEX.tar.gz" ] || \

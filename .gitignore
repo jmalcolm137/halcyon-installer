@@ -1,4 +1,4 @@
 build/
-build-halcyon/
+build-halcyon*/
 apk-cache/
 *.iso

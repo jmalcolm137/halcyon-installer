@@ -24,6 +24,22 @@ done
 
 shift $((OPTIND - 1))
 
+# Broadcom-wl is x86_64-only (the vendor blob only supports x86). Pick up an
+# explicit -a from the arguments passed through to mklive.sh, if any.
+IMAGE_ARCH=$(uname -m)
+_prev_arg=
+for _arg in "$@"; do
+    if [ "$_prev_arg" = "-a" ]; then
+        IMAGE_ARCH="$_arg"
+    fi
+    _prev_arg="$_arg"
+done
+
+HARDWARE_PKGS=
+case "$IMAGE_ARCH" in
+    x86_64) HARDWARE_PKGS="broadcom-wl linux-stable-broadcom-wl-bin" ;;
+esac
+
 if [ -z "$KERNEL_PKGS" ]; then
     KERNEL_PKGS="linux-stable"
     if [ "$IMAGE" != "minimal" ]; then
@@ -36,7 +52,7 @@ fi
 # built against the same linux-stable release as the rest of the image.
 readonly FILESYSTEM_PKGS="bcachefs-tools linux-stable-bcachefs-bin"
 
-readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${EXTRA_PKGS}"
+readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${HARDWARE_PKGS} ${EXTRA_PKGS}"
 
 case "$IMAGE" in
     minimal)

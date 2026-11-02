@@ -18,6 +18,19 @@ the kernel's `CONFIG_RUSTC_VERSION` is 0. The C-only module is an upstream
 supported configuration and works with the current bcachefs on-disk format;
 newer bcachefs releases are expected to require `CONFIG_RUST`.
 
+On x86_64, the installation images also include the halcyon-core
+`broadcom-wl` driver and its prebuilt kernel module. This is the proprietary
+Broadcom STA driver for older Broadcom PCIe Wi-Fi chips. Its package installs
+a modprobe blacklist for the in-tree `b43`, `bcma`, `brcmsmac`, and `brcmfmac`
+drivers so the `wl` driver binds instead, and the live initramfs includes the
+`wl` module so Wi-Fi works when booting from the ISO.
+
+Note that this blacklist also disables `brcmfmac`, which is the correct driver
+for newer Broadcom chips such as the BCM4377/4387 used in T2 Macs. The
+proprietary `wl` driver only handles the older BCM43xx/47xx devices. If the
+image is meant for a T2 Mac, the `brcmfmac` blacklist must be removed or made
+conditional.
+
 They are mainly intended for handling of distro releases, but can be
 used by advanced users to create their own images. They are also useful
 for creating images for specific devices that are supported but not
@@ -44,9 +57,10 @@ More tools may be added over time.
 
 ## Building the Halcyon installation ISO
 
-`build-halcyon-iso.sh` builds the bcachefs packages from the sibling `cports`
-checkout and then creates the installation ISO. It must be run as a regular
-user; it uses docker or podman for the root-only parts of `mklive.sh`.
+`build-halcyon-iso.sh` builds the bcachefs packages (and, on x86_64, the
+Broadcom-wl packages) from the sibling `cports` checkout and then creates the
+installation ISO. It must be run as a regular user; it uses docker or podman
+for the root-only parts of `mklive.sh`.
 
 The following prerequisites must be available:
 

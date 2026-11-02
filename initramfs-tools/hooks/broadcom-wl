@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Include the out-of-tree Broadcom wl driver in the live initramfs when the
+# halcyon-core broadcom-wl package is installed. The module is installed under
+# extra/, so the generic "most" module policy does not pick it up.
+#
+
+. /usr/share/initramfs-tools/hook-functions
+
+if [ -e "/lib/modules/${version}/extra/wl.ko" ] || \
+   [ -e "/lib/modules/${version}/extra/wl.ko.zst" ]; then
+    manual_add_modules wl
+fi
