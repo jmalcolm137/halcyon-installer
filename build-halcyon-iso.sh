@@ -19,7 +19,7 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 CPORTS=${HALCYON_CPORTS:-"$ROOT/../cports"}
 ARCH=${HALCYON_ARCH:-x86_64}
-IMAGE=${HALCYON_IMAGE:-plasma}
+IMAGE=${HALCYON_IMAGE:-sde}
 BLDROOT=${HALCYON_BLDROOT:-"$CPORTS/bldroot-halcyon"}
 BUILD_DIR=${HALCYON_BUILD_DIR:-"$ROOT/build-halcyon"}
 OUT=${HALCYON_ISO:-"$ROOT/halcyon-linux-$ARCH-LIVE-$(date '+%Y%m%d')-$IMAGE.iso"}
@@ -66,9 +66,22 @@ if [ "$ARCH" = "x86_64" ]; then
         pkg halcyon-core/linux-stable-broadcom-wl-bin)
 fi
 
+if [ "$IMAGE" = "sde" ]; then
+    msg "Building the Serenity Desktop Environment..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/serenity-desktop)
+
+    msg "Building the ladybird-sde browser..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/ladybird-sde)
+fi
+
 REPO="$CPORTS/packages/halcyon-core"
+EXTRA_REPO="$CPORTS/packages/halcyon-extra"
 [ -f "$REPO/$ARCH/APKINDEX.tar.gz" ] || \
     die "the halcyon-core package repository was not created at $REPO"
+[ -f "$EXTRA_REPO/$ARCH/APKINDEX.tar.gz" ] || \
+    die "the halcyon-extra package repository was not created at $EXTRA_REPO"
 
 APK_STATIC=${HALCYON_APK_STATIC:-"$BLDROOT/usr/bin/apk.static"}
 [ -x "$APK_STATIC" ] || die "no static apk found at $APK_STATIC"
@@ -99,7 +112,8 @@ exec "$RUNTIME" run --rm --privileged \
         exec ./mklive-image.sh -b "$1" -- \
             -A /usr/local/bin/halcyon-apk -a "$2" \
             -r "$3" \
+            -r "$4" \
             -r https://repo.chimera-linux.org/current/main \
             -r https://repo.chimera-linux.org/current/user \
-            -k "$4/keys" -o "$5" "$6"
-    ' sh "$IMAGE" "$ARCH" "$REPO" "$ROOT" "$OUT" "$BUILD_DIR"
+            -k "$5/keys" -o "$6" "$7"
+    ' sh "$IMAGE" "$ARCH" "$REPO" "$EXTRA_REPO" "$ROOT" "$OUT" "$BUILD_DIR"

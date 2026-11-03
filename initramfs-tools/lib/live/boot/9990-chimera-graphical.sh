@@ -61,12 +61,16 @@ EOF
     if [ -f "/root/usr/lib/dinit.d/sddm" ]; then
         # enable service
         Chimera_Service sddm
-        # autologin
+        # autologin; prefer the SDE session when it is installed
+        autologin_session=plasma
+        if [ -f "/root/usr/share/wayland-sessions/sde.desktop" ]; then
+            autologin_session=sde
+        fi
         mkdir -p /root/etc/sddm.conf.d
         cat > /root/etc/sddm.conf.d/autologin.conf << EOF
 [Autologin]
 User=anon
-Session=plasma
+Session=${autologin_session}
 EOF
     fi
 

@@ -67,10 +67,16 @@ case "$IMAGE" in
     plasma)
         PKGS="${BASE_PKGS} plasma-desktop"
         ;;
+    sde)
+        # Force the lightweight cage SDDM greeter provider; otherwise apk can
+        # pick sddm-default-kwin, which pulls in Plasma/KDE even though the
+        # image does not ask for plasma-desktop.
+        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde"
+        ;;
     *)
         echo "unknown image type: $IMAGE"
         echo
-        echo "supported image types: base gnome plasma"
+        echo "supported image types: base gnome plasma sde"
         exit 1
         ;;
 esac
