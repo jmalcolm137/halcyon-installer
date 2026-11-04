@@ -78,6 +78,10 @@ if [ "$IMAGE" = "sde" ]; then
     msg "Building uutils-coreutils..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
         pkg halcyon-extra/uutils-coreutils)
+
+    msg "Building SParted..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/sparted)
 fi
 
 REPO="$CPORTS/packages/halcyon-core"

@@ -71,7 +71,12 @@ case "$IMAGE" in
         # Force the lightweight cage SDDM greeter provider; otherwise apk can
         # pick sddm-default-kwin, which pulls in Plasma/KDE even though the
         # image does not ask for plasma-desktop.
-        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde uutils-coreutils"
+        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde uutils-coreutils sparted"
+        # Partition/filesystem tools SParted drives. They are runtime
+        # dependencies of sparted as well, but list them explicitly so the
+        # live image keeps them if that package metadata ever changes.
+        PKGS="$PKGS parted e2fsprogs dosfstools exfatprogs ntfs-3g btrfs-progs"
+        PKGS="$PKGS xfsprogs f2fs-tools jfsutils lvm2 hfsutils"
         ;;
     *)
         echo "unknown image type: $IMAGE"
