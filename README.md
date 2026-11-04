@@ -12,9 +12,12 @@ kernel module, so the live environment can create, mount, fsck and repair
 bcachefs filesystems.
 
 The `sde` image is the Serenity Desktop Environment image. It installs
-`serenity-desktop`, the `ladybird-sde` browser, and `sddm` with autologin to
-the SDE Wayland session. The SDE session defaults to the `blue-grid.png`
-SerenityOS wallpaper (`serenity-lagom` provides the wallpaper resource).
+`serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, and
+`sddm` with autologin to the SDE Wayland session. The SDE session defaults to
+the `blue-grid.png` SerenityOS wallpaper (`serenity-lagom` provides the
+wallpaper resource). `uutils-coreutils` installs the uutils/GNU userland
+overlay in `/usr/bin/gnu`; its profile hook prepends that directory to `PATH`
+for the live `anon` user, so the SDE session uses the uutils command set.
 
 The prebuilt module is built with `BCACHEFS_RUST=0`: Chimera's `linux-stable`
 is built without `CONFIG_RUST`, and the vendored Rust support in bcachefs

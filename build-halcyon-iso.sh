@@ -74,6 +74,10 @@ if [ "$IMAGE" = "sde" ]; then
     msg "Building the ladybird-sde browser..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
         pkg halcyon-extra/ladybird-sde)
+
+    msg "Building uutils-coreutils..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/uutils-coreutils)
 fi
 
 REPO="$CPORTS/packages/halcyon-core"
