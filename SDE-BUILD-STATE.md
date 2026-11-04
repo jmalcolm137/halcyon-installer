@@ -36,3 +36,19 @@ conditional.
 
 The build tree `build-halcyon-sde/` and `apk-cache/` can be removed if the
 ISO does not need to be rebuilt.
+
+## GitHub release
+
+Published as release `0.1.0`:
+
+https://github.com/jmalcolm137/halcyon-installer/releases/tag/0.1.0
+
+Assets:
+
+- `halcyon-linux-x86_64-LIVE-20261103-sde.iso`
+  - size: 1711695872 bytes
+  - state: uploaded
+  - digest: `sha256:f769e25074736b041f7c1c20393411eef15700f37fa5e978071d33a982d609c8`
+- `halcyon-linux-x86_64-LIVE-20261103-sde.iso.sha256`
+  - size: 109 bytes
+  - state: uploaded
