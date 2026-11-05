@@ -20,7 +20,12 @@ do_trymount() {
     fi
     # A freshly formatted or extracted root may not have the pseudo-filesystem
     # mountpoints yet; rbind would otherwise fail with "Failed to mount devfs".
-    mkdir -p "${ROOT_DIR}/$1" || die "Failed to create ${ROOT_DIR}/$1"
+    if ! mkdir -p "${ROOT_DIR}/$1"; then
+        echo "ERROR: cannot create ${ROOT_DIR}/$1." >&2
+        echo "The target must be a writable mount; check:" >&2
+        echo "  findmnt -T ${ROOT_DIR} -o TARGET,SOURCE,FSTYPE,OPTIONS" >&2
+        error_sig 1 $LINENO
+    fi
     mount --rbind "/$1" "${ROOT_DIR}/$1" || die "Failed to mount ${1}fs"
     mount --make-rslave "${ROOT_DIR}/$1" || die "Failed to make ${1} rslave"
     MOUNTED_PSEUDO="${MOUNTED_PSEUDO} $1"
