@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=OpenCode
+GenericName=AI Coding Agent
+Comment=Open source AI coding agent
+Exec=opencode
+Icon=utilities-terminal
+Terminal=true
+Categories=Development;
+Keywords=ai;code;agent;opencode;
+StartupNotify=false
