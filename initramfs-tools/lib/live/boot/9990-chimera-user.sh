@@ -44,6 +44,15 @@ Chimera_User() {
 
     chroot /root useradd -m -c "$USERNAME" -s "$USERSHELL" "$USERNAME"
 
+    # SerenityOS applications expect the standard home directories. In
+    # particular the FileManager's desktop lives in ~/Desktop; without it the
+    # "Open in Terminal" action passes a non-existent working directory to
+    # posix_spawn and fails with ENOENT.
+    for _dir in Desktop Documents Downloads Music Pictures Videos Templates Public; do
+        chroot /root mkdir -p "/home/${USERNAME}/${_dir}"
+        chroot /root chown "${USERNAME}:${USERNAME}" "/home/${USERNAME}/${_dir}"
+    done
+
     chroot /root sh -c "echo 'root:${USERPASS}'|chpasswd -c SHA512"
     chroot /root sh -c "echo '$USERNAME:${USERPASS}'|chpasswd -c SHA512"
 

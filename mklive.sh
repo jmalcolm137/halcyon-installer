@@ -218,6 +218,22 @@ msg "Installing target packages..."
 run_apk "${ROOT_DIR}" add ${PACKAGES} ${TARGET_PACKAGES} \
     || die "failed to install full rootfs"
 
+# SerenityOS applications are launched as /bin/<name>. The SDE's runtime maps
+# those paths through SDE_APP_BIN_DIR, but a live session does not always get
+# that environment (and the FileManager/Taskbar hard-code some /bin paths).
+# Provide merge-usr compatibility links so the desktop menu and app launchers
+# work even when the mapping is unavailable.
+if [ -d "${ROOT_DIR}/usr/lib/sde/bin" ]; then
+    msg "Linking SDE applications into /usr/bin..."
+    for app in "${ROOT_DIR}/usr/lib/sde/bin"/*; do
+        [ -e "$app" ] || continue
+        name=${app##*/}
+        [ -e "${ROOT_DIR}/usr/bin/${name}" ] && continue
+        ln -s "../lib/sde/bin/${name}" "${ROOT_DIR}/usr/bin/${name}" \
+            || die "failed to link SDE application '${name}'"
+    done
+fi
+
 # Live-session overrides: the SDE WindowServer build with on-screen window
 # fitting, the Redmond 2000 default theme, and the live NetworkManager polkit
 # rule. Kept as an image overlay so the packages remain independently usable.
