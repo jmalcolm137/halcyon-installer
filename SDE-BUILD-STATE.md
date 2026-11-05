@@ -112,13 +112,18 @@ Verified from the published ISO filesystem:
 - The live PolicyKit rule and both desktop entries are present.
 - The ISO boots to the SDE desktop; the Halcyon Setup desktop link is visible.
 
-## 0.1.5-r1 (live fixes)
+## 0.1.5-r2 (live fixes and USB boot)
 
-- ISO: `halcyon-linux-x86_64-LIVE-20261105-sde-r1.iso`
+- ISO: `halcyon-linux-x86_64-LIVE-20261105-sde-r2.iso`
 - Size: `1847805952` bytes
-- SHA-256: `591b1cbdc8406f66b99a2e44b635c2ac066e0e56000ee0d405591ce061736a0e`
+- SHA-256: `2c52fa192e7ae406873acb5188cef594f79d1bcafb35fadcf9c7b811f10c661c`
 - Based on the 0.1.5 package set; the root filesystem and initramfs were
   remastered with the tracked live overlay and initramfs changes.
+
+The first remaster (r1) was optical/UEFI-only: its hybrid MBR did not carry
+Limine's BIOS stage 1, so a BIOS machine booting the image from a USB stick
+failed at `limine-bios.sys build ID mismatch`. r2 replaces the boot files with
+the upstream Limine 12.9.0 release files and runs `limine bios-install`.
 
 Fixes:
 
@@ -144,3 +149,5 @@ Verified in QEMU and VirtualBox:
 - `opencode` starts its TUI from the SDE Terminal.
 - Ladybird opens and renders `https://example.com/`.
 - The ISO boots to the SDE desktop under both BIOS and UEFI firmware.
+- The ISO also boots with the image attached as a hard disk in BIOS mode,
+  which is the USB-stick boot path.
