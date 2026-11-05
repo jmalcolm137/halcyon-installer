@@ -90,6 +90,10 @@ if [ "$IMAGE" = "sde" ]; then
     msg "Building Halcyon Setup..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
         pkg halcyon-core/halcyon-setup)
+
+    msg "Building Crush..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/crush)
 fi
 
 REPO="$CPORTS/packages/halcyon-core"

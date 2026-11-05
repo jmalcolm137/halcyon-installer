@@ -13,7 +13,7 @@ bcachefs filesystems.
 
 The `sde` image is the Serenity Desktop Environment image. It installs
 `serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, `opencode`,
-the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
+`crush`, the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
 Wayland session. The live initramfs creates a dedicated `live` group and adds
 the autologin user to it. The live session also installs a PolicyKit rule that
 lets an active local user in that group use `pkexec` without a desktop

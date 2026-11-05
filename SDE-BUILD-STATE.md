@@ -151,3 +151,27 @@ Verified in QEMU and VirtualBox:
 - The ISO boots to the SDE desktop under both BIOS and UEFI firmware.
 - The ISO also boots with the image attached as a hard disk in BIOS mode,
   which is the USB-stick boot path.
+
+## 0.1.5-r3 (Crush)
+
+- ISO: `halcyon-linux-x86_64-LIVE-20261105-sde-r3.iso`
+- Size: `1874841600` bytes
+- SHA-256: `5bfdbe65fa7abe9406f1206f3f99598f95b0978a0f27d72c80aa25a6521989e1`
+- Based on r2, with the `halcyon-extra/crush` package installed.
+
+Added:
+
+- `crush` 0.100.0, the Go terminal AI coding agent. The package uses the
+  upstream static Linux x86_64 release binary, installs the shell completions
+  and man page, and depends on `ca-certificates`.
+- `crush` is included in the SDE package set in `mklive-image.sh`, and
+  `build-halcyon-iso.sh` builds `halcyon-extra/crush` before assembling the
+  image.
+
+Verified in the live r3 image:
+
+- `/usr/bin/crush` is owned by the `crush` package and reports
+  `crush version v0.100.0`.
+- The binary is statically linked and was tested under an emulated Penryn
+  (Core 2, no SSE4.2) CPU.
+- The r3 ISO keeps the r2 USB/BIOS, optical BIOS and UEFI boot layout.
