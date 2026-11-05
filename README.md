@@ -12,8 +12,11 @@ kernel module, so the live environment can create, mount, fsck and repair
 bcachefs filesystems.
 
 The `sde` image is the Serenity Desktop Environment image. It installs
-`serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, and
-`sddm` with autologin to the SDE Wayland session. The SDE session defaults to
+`serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, `opencode`,
+the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
+Wayland session. The live session also installs a PolicyKit rule that lets the
+active `wheel` user use `pkexec` without a desktop authentication agent, so
+Partition Editor and the setup wizard can elevate from the live desktop. The SDE session defaults to
 the `blue-grid.png` SerenityOS wallpaper (`serenity-lagom` provides the
 wallpaper resource). `uutils-coreutils` installs the uutils/GNU userland
 overlay in `/usr/bin/gnu`; its profile hook prepends that directory to `PATH`

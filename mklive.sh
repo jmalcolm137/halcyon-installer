@@ -242,6 +242,12 @@ if [ -d build-overlay ]; then
     cp -a build-overlay/. "${ROOT_DIR}/" || die "failed to apply live-session overlay"
 fi
 
+# Tracked overrides that must be present in every Halcyon live image.
+if [ -d live-overlay ]; then
+    msg "Applying tracked live-session overlay..."
+    cp -a live-overlay/. "${ROOT_DIR}/" || die "failed to apply tracked live-session overlay"
+fi
+
 # determine kernel version
 if [ -z "$KERNVER" ]; then
     for f in "${ROOT_DIR}/boot/"vmlinu[xz]-*; do
