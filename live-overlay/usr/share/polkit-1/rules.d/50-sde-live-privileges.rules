@@ -3,12 +3,11 @@
 // desktop PolicyKit agent, which the SDE does not always provide. The
 // /run/live check keeps this rule inactive on installed systems.
 polkit.addRule(function(action, subject) {
+    if (action.id != "org.freedesktop.policykit.exec")
+        return;
     var live = polkit.spawn(["/bin/sh", "-c", "test -e /run/live && echo live"]);
-    if (action.id == "org.freedesktop.polkit.exec" ||
-        action.id == "org.freedesktop.policykit.exec") {
-        if (subject.local && subject.active && subject.isInGroup("wheel") &&
-            live.length > 0 && live[0] == "live") {
-            return polkit.Result.YES;
-        }
+    if (live.length > 0 && live[0] == "live" &&
+        subject.local && subject.active && subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
     }
 });
