@@ -2,3 +2,4 @@ build/
 build-halcyon*/
 apk-cache/
 *.iso
+build-overlay/

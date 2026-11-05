@@ -55,7 +55,7 @@ CMDLINE=
 
 run_host_apk() {
     "$APK_BIN" ${APK_REPO} --root "$@" --no-interactive --arch ${APK_ARCH} \
-        --cache-packages --cache-dir "${CACHE_DIR}/${APK_ARCH}"
+        --force-overwrite --cache-packages --cache-dir "${CACHE_DIR}/${APK_ARCH}"
 }
 
 run_apk() {
@@ -217,6 +217,14 @@ mount_pseudo
 msg "Installing target packages..."
 run_apk "${ROOT_DIR}" add ${PACKAGES} ${TARGET_PACKAGES} \
     || die "failed to install full rootfs"
+
+# Live-session overrides: the SDE WindowServer build with on-screen window
+# fitting, the Redmond 2000 default theme, and the live NetworkManager polkit
+# rule. Kept as an image overlay so the packages remain independently usable.
+if [ -d build-overlay ]; then
+    msg "Applying live-session overlay..."
+    cp -a build-overlay/. "${ROOT_DIR}/" || die "failed to apply live-session overlay"
+fi
 
 # determine kernel version
 if [ -z "$KERNVER" ]; then
