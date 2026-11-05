@@ -1,0 +1,5 @@
+#!/bin/sh
+# OpenCode's bundled CLI needs its private libstdc++ ABI shim on musl.
+LD_LIBRARY_PATH="/usr/lib/opencode${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH
+exec /usr/bin/opencode "$@"
