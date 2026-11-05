@@ -66,3 +66,22 @@ Assets:
 Previous SDE image without uutils:
 
 https://github.com/jmalcolm137/halcyon-installer/releases/tag/0.1.0
+
+## 0.1.4
+
+- ISO: `halcyon-linux-x86_64-LIVE-20261104-sde-r8.iso`
+- Size: 1727184896 bytes (1.7 GiB)
+- SHA-256: `6f0a87eab87a0e58849c251ddb4a70c512d6454479b107be7861a24fc0698570`
+- Release: https://github.com/jmalcolm137/halcyon-installer/releases/tag/0.1.4
+
+Verified in QEMU:
+
+- The SDE desktop boots with a native musl `WindowServer` (the 0.1.3 image
+  overlaid a glibc build and failed before the desktop).
+- A Terminal window opens and resizes interactively.
+- Partition Editor launches and identifies itself as `Partition Editor`.
+- Ladybird opens and renders `https://example.com/`.
+- The WindowServer config selects Redmond 2000, and the live image installs
+  the NetworkManager polkit rule for the active local user.
+- SDE applications are linked into `/usr/bin` and the live user's standard
+  home directories (including `~/Desktop`) are created.
