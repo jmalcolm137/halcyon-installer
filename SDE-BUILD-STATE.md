@@ -85,3 +85,29 @@ Verified in QEMU:
   the NetworkManager polkit rule for the active local user.
 - SDE applications are linked into `/usr/bin` and the live user's standard
   home directories (including `~/Desktop`) are created.
+
+## 0.1.5
+
+- ISO: `halcyon-linux-x86_64-LIVE-20261105-sde.iso`
+- Size: `1849266176` bytes
+- SHA-256: `f2a77b05fe9746739b03bc38e432eb51a958be6db5eb299ade41777e09dd36e4`
+- Release: https://github.com/jmalcolm137/halcyon-installer/releases/tag/0.1.5
+
+Added to the SDE image:
+
+- `halcyon-setup` 0.1.0, the Windows 95-style LibGUI installation wizard,
+  including `/etc/skel/Desktop/HalcyonSetup.desktop`.
+- `opencode` 2.2.5, with a desktop application entry and a
+  `/usr/local/bin/opencode` launcher that supplies the bundled libstdc++ ABI
+  shim path.
+- A live-only PolicyKit rule (`/run/live` gate) that allows the active `wheel`
+  user to use `pkexec` without the SDE polkit agent. This covers Partition
+  Editor and Halcyon Setup; the rule is inactive on installed systems.
+
+Verified from the published ISO filesystem:
+
+- `/usr/bin/halcyon-setup` and `halcyon-setup.real --version` work.
+- `/usr/local/bin/opencode --version` reports `opencode v2.2.5`.
+- `halcyon-setup`, `opencode`, `libcxxabi` and `libgcc-chimera` are installed.
+- The live PolicyKit rule and both desktop entries are present.
+- The ISO boots to the SDE desktop; the Halcyon Setup desktop link is visible.
