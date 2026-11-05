@@ -111,3 +111,36 @@ Verified from the published ISO filesystem:
 - `halcyon-setup`, `opencode`, `libcxxabi` and `libgcc-chimera` are installed.
 - The live PolicyKit rule and both desktop entries are present.
 - The ISO boots to the SDE desktop; the Halcyon Setup desktop link is visible.
+
+## 0.1.5-r1 (live fixes)
+
+- ISO: `halcyon-linux-x86_64-LIVE-20261105-sde-r1.iso`
+- Size: `1847805952` bytes
+- SHA-256: `591b1cbdc8406f66b99a2e44b635c2ac066e0e56000ee0d405591ce061736a0e`
+- Based on the 0.1.5 package set; the root filesystem and initramfs were
+  remastered with the tracked live overlay and initramfs changes.
+
+Fixes:
+
+- The live initramfs creates a dedicated `live` group and adds the autologin
+  user to it. The live PolicyKit rule now checks that group and no longer calls
+  `polkit.spawn`; polkitd 128 crashed with SIGILL in duktape when the old rule
+  ran, which made Partition Editor report that it needed authentication.
+- The live overlay replaces `chimera-chroot` with a version that creates the
+  target's `/dev`, `/proc`, `/sys` and `/tmp` mountpoints before mounting them,
+  so a freshly formatted root no longer fails with `Failed to mount devfs`.
+- The live overlay adds a `default` cursor theme that inherits Adwaita. Without
+  it the SDE cursor manager loaded only the fallback arrow and never showed the
+  resize cursors.
+
+Verified in QEMU and VirtualBox:
+
+- The live user is in `anon` and `live`; a local `pkexec id` returns `uid=0`
+  without an authentication prompt.
+- `chimera-chroot` on an empty target creates the pseudo-filesystem
+  mountpoints and proceeds to the chroot.
+- Hovering a window border shows the horizontal, vertical and diagonal resize
+  cursors.
+- `opencode` starts its TUI from the SDE Terminal.
+- Ladybird opens and renders `https://example.com/`.
+- The ISO boots to the SDE desktop under both BIOS and UEFI firmware.

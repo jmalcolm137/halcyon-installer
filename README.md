@@ -14,13 +14,25 @@ bcachefs filesystems.
 The `sde` image is the Serenity Desktop Environment image. It installs
 `serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, `opencode`,
 the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
-Wayland session. The live session also installs a PolicyKit rule that lets the
-active `wheel` user use `pkexec` without a desktop authentication agent, so
-Partition Editor and the setup wizard can elevate from the live desktop. The SDE session defaults to
-the `blue-grid.png` SerenityOS wallpaper (`serenity-lagom` provides the
-wallpaper resource). `uutils-coreutils` installs the uutils/GNU userland
-overlay in `/usr/bin/gnu`; its profile hook prepends that directory to `PATH`
-for the live `anon` user, so the SDE session uses the uutils command set.
+Wayland session. The live initramfs creates a dedicated `live` group and adds
+the autologin user to it. The live session also installs a PolicyKit rule that
+lets an active local user in that group use `pkexec` without a desktop
+authentication agent, so Partition Editor and the setup wizard can elevate from
+the live desktop. Because the group exists only in the live root, the rule is
+inactive on installed systems. The rule deliberately does not use
+`polkit.spawn`: polkitd 128 crashes in duktape when that call runs. The SDE
+session defaults to the `blue-grid.png` SerenityOS wallpaper
+(`serenity-lagom` provides the wallpaper resource). `uutils-coreutils` installs
+the uutils/GNU userland overlay in `/usr/bin/gnu`; its profile hook prepends
+that directory to `PATH` for the live `anon` user, so the SDE session uses the
+uutils command set.
+
+The tracked live overlay also ships a `chimera-chroot` override that creates
+the target's `/dev`, `/proc`, `/sys` and `/tmp` mountpoints before mounting
+them, so a freshly formatted root does not fail with "Failed to mount devfs".
+It provides a `default` cursor theme inheriting Adwaita as well; without it the
+SDE's cursor manager loads only the fallback arrow and never shows the resize
+cursors.
 
 The prebuilt module is built with `BCACHEFS_RUST=0`: Chimera's `linux-stable`
 is built without `CONFIG_RUST`, and the vendored Rust support in bcachefs

@@ -44,6 +44,14 @@ Chimera_User() {
 
     chroot /root useradd -m -c "$USERNAME" -s "$USERSHELL" "$USERNAME"
 
+    # Give the live user a dedicated group for live-only PolicyKit rules. The
+    # group exists only in the live root, so a rule keyed on it cannot grant
+    # passwordless pkexec on an installed system.
+    if ! chroot /root getent group live > /dev/null 2>&1; then
+        chroot /root groupadd live
+    fi
+    chroot /root usermod -aG live "$USERNAME"
+
     # SerenityOS applications expect the standard home directories. In
     # particular the FileManager's desktop lives in ~/Desktop; without it the
     # "Open in Terminal" action passes a non-existent working directory to
