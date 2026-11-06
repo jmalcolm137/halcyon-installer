@@ -41,6 +41,11 @@ the SDE Help app can open its index and application pages. `mklive.sh` fails
 the image build if the SDE prefix exists but
 `/usr/share/man/man7/Help-index.md` is missing.
 
+Every image includes `uutils-coreutils`, `ckms`, `bcachefs-tools` and the
+prebuilt bcachefs kernel module. The installer also adds those packages to the
+target explicitly, independent of the Desktop checkbox, so a console-only
+installation still has the GNU userland and bcachefs tooling.
+
 The tracked live overlay also ships a `chimera-chroot` override that creates
 the target's `/dev`, `/proc`, `/sys` and `/tmp` mountpoints before mounting
 them, so a freshly formatted root does not fail with "Failed to mount devfs".

@@ -214,3 +214,19 @@ skips the manual tree because the framework package was supposed to own it.
   pages.
 - `mklive.sh` now fails the image build if the SDE prefix is present but
   `/usr/share/man/man7/Help-index.md` is missing.
+
+## Post-r3 installer Desktop and required packages
+
+- The installer has a Desktop page between Accounts and Options. The SDE
+  checkbox defaults on; clearing it removes `serenity-desktop`,
+  `serenity-lagom`, `sddm`, the SDE greeter/theme packages and `ladybird-sde`
+  from the target.
+- `mklive-image.sh` now puts `uutils-coreutils` and `ckms` in `REQUIRED_PKGS`
+  and includes `bcachefs-tools` plus `linux-stable-bcachefs-bin` on every
+  image. The installer also runs `apk add` for all four on the target.
+- `resolve_command()` had a use-after-free: `ByteString{path}.split(':')`
+  returned views into a destroyed temporary. Command lookups such as
+  `mkfs.vfat` could then fail randomly; FAT formatting reported exit code 127.
+  The string now outlives the views, and standard sbin/bin directories are a
+  fallback. FAT formatting prefers `mkfs.fat`, and preflight checks the
+  formatter and bcachefs tools.

@@ -52,11 +52,15 @@ fi
 # built against the same linux-stable release as the rest of the image.
 readonly FILESYSTEM_PKGS="bcachefs-tools linux-stable-bcachefs-bin"
 
-readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${HARDWARE_PKGS} ${EXTRA_PKGS}"
+# Keep these on every image: the installer ensures they are present on the
+# target regardless of the desktop choice.
+readonly REQUIRED_PKGS="uutils-coreutils ckms"
+
+readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${REQUIRED_PKGS} ${HARDWARE_PKGS} ${EXTRA_PKGS}"
 
 case "$IMAGE" in
     minimal)
-        PKGS="base-minimal base-full-kernel ${KERNEL_PKGS} ${EXTRA_PKGS}"
+        PKGS="base-minimal base-full-kernel ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${REQUIRED_PKGS} ${EXTRA_PKGS}"
         ;;
     base)
         PKGS="${BASE_PKGS}"
@@ -76,7 +80,7 @@ case "$IMAGE" in
         # generic profile hook. The live overlay adds /etc/mkshrc and live-sh,
         # which set ENV and exec /bin/sh, so the SDE Terminal sources the
         # hook. Keep the package installer-agnostic.
-        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde uutils-coreutils sparted halcyon-setup crush"
+        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde sparted halcyon-setup crush"
         if [ "$IMAGE_ARCH" = "x86_64" ]; then
             PKGS="$PKGS opencode"
         fi
