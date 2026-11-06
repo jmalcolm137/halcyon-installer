@@ -1,0 +1,8 @@
+# Live-session mksh rc. pam_env sets ENV=/etc/mkshrc for the sddm session, and
+# the live-sh wrapper sets it for the SDE Terminal. Source the generic
+# uutils-coreutils profile hook; it gates itself to regular users, so system
+# accounts keep the Chimera userland. This glue stays in the live image so the
+# package remains usable on a normal Chimera installation.
+if [ -r /etc/profile.d/00-gnu-path.sh ]; then
+    . /etc/profile.d/00-gnu-path.sh
+fi

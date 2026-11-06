@@ -13,8 +13,19 @@ Chimera_User() {
 
     USERNAME="anon"
     USERPASS="chimera"
-    [ -x /root/usr/bin/mksh ] && USERSHELL="/usr/bin/mksh"
-    [ -z "$USERSHELL" ] && USERSHELL="/bin/sh"
+    # Keep /bin/sh (mksh) for the live user. The SDE Terminal filters the
+    # environment it passes to the shell and drops ENV, so use a tiny live
+    # wrapper that sets ENV=/etc/mkshrc and then execs /bin/sh. The mkshrc is
+    # installed by uutils-coreutils and sources its PATH overlay.
+    if [ -x /root/usr/local/bin/live-sh ]; then
+        USERSHELL="/usr/local/bin/live-sh"
+    elif [ -x /root/bin/sh ]; then
+        USERSHELL="/bin/sh"
+    elif [ -x /root/usr/bin/mksh ]; then
+        USERSHELL="/usr/bin/mksh"
+    else
+        USERSHELL="/bin/sh"
+    fi
 
     for _PARAMETER in ${LIVE_BOOT_CMDLINE}; do
         case "${_PARAMETER}" in
@@ -63,6 +74,14 @@ Chimera_User() {
 
     chroot /root sh -c "echo 'root:${USERPASS}'|chpasswd -c SHA512"
     chroot /root sh -c "echo '$USERNAME:${USERPASS}'|chpasswd -c SHA512"
+
+    # pam_env reads /etc/environment for the sddm session. mksh only reads an
+    # rc file named by ENV; the live-sh wrapper sets it for the SDE Terminal,
+    # and this keeps it set for login shells and other mksh sessions. The
+    # /etc/mkshrc file is installed by uutils-coreutils.
+    if [ -d /root/etc ] && ! grep -q '^ENV=' /root/etc/environment 2>/dev/null; then
+        echo 'ENV=/etc/mkshrc' >> /root/etc/environment
+    fi
 
     if [ -x /root/usr/bin/doas ]; then
         echo "permit persist $USERNAME" >> /root/etc/doas.conf

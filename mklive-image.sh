@@ -71,6 +71,11 @@ case "$IMAGE" in
         # Force the lightweight cage SDDM greeter provider; otherwise apk can
         # pick sddm-default-kwin, which pulls in Plasma/KDE even though the
         # image does not ask for plasma-desktop.
+        #
+        # uutils-coreutils installs the GNU userland in /usr/bin/gnu and a
+        # generic profile hook. The live overlay adds /etc/mkshrc and live-sh,
+        # which set ENV and exec /bin/sh, so the SDE Terminal sources the
+        # hook. Keep the package installer-agnostic.
         PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde uutils-coreutils sparted halcyon-setup crush"
         if [ "$IMAGE_ARCH" = "x86_64" ]; then
             PKGS="$PKGS opencode"

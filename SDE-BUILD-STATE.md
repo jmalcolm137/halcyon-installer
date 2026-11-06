@@ -175,3 +175,29 @@ Verified in the live r3 image:
 - The binary is statically linked and was tested under an emulated Penryn
   (Core 2, no SSE4.2) CPU.
 - The r3 ISO keeps the r2 USB/BIOS, optical BIOS and UEFI boot layout.
+
+## Post-r3 live-session fixes
+
+The r3 image exposed three live-session problems. They are fixed in the
+tracked overlay/initramfs for the next build:
+
+- `halcyon-setup` and the desktop icon did nothing. The live session can carry
+  a stale `WAYLAND_DISPLAY=wayland-0`, but the SDE compositor's socket is
+  `sde`. The launcher now resolves the socket name and falls back to `sde`
+  before calling `pkexec` or the privileged binary.
+- `pkexec` failed with `org.freedesktop.DBus.Error.NoReply` because the live
+  PolicyKit rule called `subject.isInGroup("live")`; polkitd 128 dies with
+  SIGILL in duktape while evaluating it. The rule now matches
+  `subject.local`, `subject.active` and a non-root `subject.user`, which
+  `pkexec id` verifies as `uid=0` without crashing polkitd.
+- The r3 ISO installed the pre-r3 `uutils-coreutils` (only
+  `/etc/profile.d/00-gnu-path.sh`), and the live user's passwd shell was
+  `/bin/sh` (mksh). The SDE Terminal therefore never applied `/usr/bin/gnu`.
+  The live user now keeps `/bin/sh`; the live overlay installs `/etc/mkshrc`
+  (which sources the package's generic profile hook), the initramfs sets
+  `ENV=/etc/mkshrc` in `/etc/environment` (read by pam_env for the sddm
+  session), and a live-only `/usr/local/bin/live-sh` wrapper sets `ENV` and
+  execs `/bin/sh` because the SDE Terminal filters `ENV` out of the shell
+  environment. `uutils-coreutils` itself is unchanged (r3) and remains usable
+  on native Chimera. A new Terminal then reports `command -v ls` ->
+  `/usr/bin/gnu/ls` and `ls --version` -> uutils 0.12.0.

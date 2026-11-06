@@ -16,16 +16,25 @@ The `sde` image is the Serenity Desktop Environment image. It installs
 `crush`, the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
 Wayland session. The live initramfs creates a dedicated `live` group and adds
 the autologin user to it. The live session also installs a PolicyKit rule that
-lets an active local user in that group use `pkexec` without a desktop
+lets the active local non-root user use `pkexec` without a desktop
 authentication agent, so Partition Editor and the setup wizard can elevate from
-the live desktop. Because the group exists only in the live root, the rule is
-inactive on installed systems. The rule deliberately does not use
-`polkit.spawn`: polkitd 128 crashes in duktape when that call runs. The SDE
-session defaults to the `blue-grid.png` SerenityOS wallpaper
-(`serenity-lagom` provides the wallpaper resource). `uutils-coreutils` installs
-the uutils/GNU userland overlay in `/usr/bin/gnu`; its profile hook prepends
-that directory to `PATH` for the live `anon` user, so the SDE session uses the
-uutils command set.
+the live desktop. The rule is installed by the live overlay only, so installed
+systems never see it. It deliberately does not use `polkit.spawn` or
+`subject.isInGroup()`: polkitd 128 crashes in duktape with SIGILL on both, and
+pkexec then fails with "Message recipient disconnected from message bus without
+replying". The rule matches `subject.local`, `subject.active` and
+`subject.user` instead. The SDE session defaults to the `blue-grid.png`
+SerenityOS wallpaper (`serenity-lagom` provides the wallpaper resource).
+`uutils-coreutils` installs the uutils/GNU userland overlay in `/usr/bin/gnu`;
+its profile hook prepends that directory to `PATH` for the live `anon` user.
+The live user keeps `/bin/sh` (mksh). The live overlay installs
+`/etc/mkshrc`, which sources the generic `uutils-coreutils` profile hook; the
+package itself remains installer-agnostic and works on a normal Chimera
+installation. The live image also sets `ENV=/etc/mkshrc` in `/etc/environment`
+and uses a small `/usr/local/bin/live-sh` wrapper as the passwd shell, because
+the SDE Terminal filters `ENV` out of the environment it passes to the shell.
+The wrapper sets `ENV` and then execs `/bin/sh`, so the SDE Terminal gets the
+GNU command set without changing the real shell.
 
 The tracked live overlay also ships a `chimera-chroot` override that creates
 the target's `/dev`, `/proc`, `/sys` and `/tmp` mountpoints before mounting

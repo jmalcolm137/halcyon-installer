@@ -1,14 +1,17 @@
-// Halcyon live session only: the live user is in the dedicated "live" group,
-// which only the live image creates. Allow that active local user to use
-// pkexec without relying on a desktop PolicyKit agent, which the SDE does not
-// always provide.
+// Halcyon live session only: allow the active local user to use pkexec without
+// relying on a desktop PolicyKit agent, which the SDE does not always provide.
+// The file is installed by the live overlay only, so installed systems never
+// see it.
 //
-// Do not use polkit.spawn here. polkitd 128 crashes with SIGILL in duktape
-// when this rule runs, which made Partition Editor report that authorization
-// could not be checked.
+// Do not call subject.isInGroup() here. polkitd 128 (duktape) dies with SIGILL
+// while evaluating it, and every pkexec request then fails with
+// "Message recipient disconnected from message bus without replying". Match
+// the local/active flags and the user name instead; those do not crash. Root
+// does not need pkexec, so exclude it.
 polkit.addRule(function(action, subject) {
     if (action.id != "org.freedesktop.policykit.exec")
         return;
-    if (subject.local && subject.active && subject.isInGroup("live"))
-        return polkit.Result.YES;
+    if (!subject.local || !subject.active || subject.user == "root")
+        return;
+    return polkit.Result.YES;
 });

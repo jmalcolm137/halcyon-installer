@@ -1,0 +1,7 @@
+#!/bin/sh
+# Live-only login shell. The SDE Terminal starts the passwd shell but filters
+# the environment down to a fixed list that does not include ENV. Set mksh's
+# rc here, then run the real /bin/sh so the session keeps the Chimera shell.
+ENV=${ENV:-/etc/mkshrc}
+export ENV
+exec /bin/sh "$@"
