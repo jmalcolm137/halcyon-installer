@@ -226,7 +226,9 @@ skips the manual tree because the framework package was supposed to own it.
   image. The installer also runs `apk add` for all four on the target.
 - `resolve_command()` had a use-after-free: `ByteString{path}.split(':')`
   returned views into a destroyed temporary. Command lookups such as
-  `mkfs.vfat` could then fail randomly; FAT formatting reported exit code 127.
-  The string now outlives the views, and standard sbin/bin directories are a
-  fallback. FAT formatting prefers `mkfs.fat`, and preflight checks the
-  formatter and bcachefs tools.
+  `mkfs.vfat` could then fail randomly. The string now outlives the views, and
+  standard sbin/bin directories are a fallback.
+- `format_partition()` built the formatter flags but never put the program
+  name at argument 0. `run()` then tried to execute `-F` and every filesystem
+  creation failed with exit code 127. r5 inserts the formatter before the
+  arguments; preflight checks the formatter and bcachefs tools.
