@@ -20,7 +20,10 @@ do_trymount() {
     fi
     # A freshly formatted or extracted root may not have the pseudo-filesystem
     # mountpoints yet; rbind would otherwise fail with "Failed to mount devfs".
-    if ! mkdir -p "${ROOT_DIR}/$1"; then
+    # Some userland mkdir utilities return a nonzero status even when the
+    # directory already exists, so verify the result instead of trusting $?.
+    mkdir -p "${ROOT_DIR}/$1" > /dev/null 2>&1 || true
+    if [ ! -d "${ROOT_DIR}/$1" ]; then
         echo "ERROR: cannot create ${ROOT_DIR}/$1." >&2
         echo "The target must be a writable mount; check:" >&2
         echo "  findmnt -T ${ROOT_DIR} -o TARGET,SOURCE,FSTYPE,OPTIONS" >&2

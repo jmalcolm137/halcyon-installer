@@ -232,3 +232,16 @@ skips the manual tree because the framework package was supposed to own it.
   name at argument 0. `run()` then tried to execute `-F` and every filesystem
   creation failed with exit code 127. r5 inserts the formatter before the
   arguments; preflight checks the formatter and bcachefs tools.
+
+## Post-r3 desktop launcher and chimera-chroot
+
+- The live desktop now uses an executable `/home/anon/Desktop/Install Halcyon
+  Linux` launcher that execs `/usr/bin/halcyon-setup`. The SDE file manager
+  opens a non-executable `.desktop` file in TextEditor, which is why the old
+  desktop link did not run the wizard. The installer also creates the pseudo
+  mountpoints `/dev`, `/proc`, `/sys` and `/tmp` before chrooting.
+- The live `chimera-chroot` override now verifies the pseudo-filesystem
+  directories with `[ -d ]` instead of trusting `mkdir`'s exit status. Some
+  userland `mkdir` builds return a nonzero status even when the directory
+  already exists, which made the script report "Failed to mount devfs" and
+  broke both the installer and the manual handbook sequence.

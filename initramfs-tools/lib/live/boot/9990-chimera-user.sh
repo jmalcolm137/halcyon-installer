@@ -72,6 +72,14 @@ Chimera_User() {
         chroot /root chown "${USERNAME}:${USERNAME}" "/home/${USERNAME}/${_dir}"
     done
 
+    # The SDE file manager treats a non-executable .desktop file as text, so
+    # put an executable launcher on the live desktop instead.
+    _desktop="/home/${USERNAME}/Desktop"
+    chroot /root rm -f "${_desktop}/HalcyonSetup.desktop"
+    chroot /root sh -c "printf '%s\n' '#!/bin/sh' 'exec /usr/bin/halcyon-setup' > '${_desktop}/Install Halcyon Linux'"
+    chroot /root chmod 755 "${_desktop}/Install Halcyon Linux"
+    chroot /root chown "${USERNAME}:${USERNAME}" "${_desktop}/Install Halcyon Linux"
+
     chroot /root sh -c "echo 'root:${USERPASS}'|chpasswd -c SHA512"
     chroot /root sh -c "echo '$USERNAME:${USERPASS}'|chpasswd -c SHA512"
 
