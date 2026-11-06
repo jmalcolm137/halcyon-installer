@@ -66,6 +66,10 @@ if [ "$ARCH" = "x86_64" ]; then
         pkg halcyon-core/linux-stable-broadcom-wl-bin)
 fi
 
+msg "Building uutils-coreutils..."
+(cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+    pkg halcyon-extra/uutils-coreutils)
+
 if [ "$IMAGE" = "sde" ]; then
     msg "Building the Serenity Desktop Environment..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
@@ -74,10 +78,6 @@ if [ "$IMAGE" = "sde" ]; then
     msg "Building the ladybird-sde browser..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
         pkg halcyon-extra/ladybird-sde)
-
-    msg "Building uutils-coreutils..."
-    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
-        pkg halcyon-extra/uutils-coreutils)
 
     msg "Building SParted..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
