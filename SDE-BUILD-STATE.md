@@ -201,3 +201,16 @@ tracked overlay/initramfs for the next build:
   environment. `uutils-coreutils` itself is unchanged (r3) and remains usable
   on native Chimera. A new Terminal then reports `command -v ls` ->
   `/usr/bin/gnu/ls` and `ls --version` -> uutils 0.12.0.
+
+## Post-r3 SDE Help fix
+
+The r3 image shipped without the Serenity manual pages, so Help opened its
+Error dialog for `/usr/share/man/man7/Help-index.md`. The v0.1.0 split install
+skips the manual tree because the framework package was supposed to own it.
+
+- `serenity-desktop` now copies
+  `/usr/lib/sde/framework/serenity/Base/usr/share/man` into `/usr/share/man`
+  (package `r3`), so the next ISO contains the Help index and application
+  pages.
+- `mklive.sh` now fails the image build if the SDE prefix is present but
+  `/usr/share/man/man7/Help-index.md` is missing.

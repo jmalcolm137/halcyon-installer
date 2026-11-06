@@ -36,6 +36,11 @@ the SDE Terminal filters `ENV` out of the environment it passes to the shell.
 The wrapper sets `ENV` and then execs `/bin/sh`, so the SDE Terminal gets the
 GNU command set without changing the real shell.
 
+`serenity-desktop` installs the Serenity manual tree under `/usr/share/man` so
+the SDE Help app can open its index and application pages. `mklive.sh` fails
+the image build if the SDE prefix exists but
+`/usr/share/man/man7/Help-index.md` is missing.
+
 The tracked live overlay also ships a `chimera-chroot` override that creates
 the target's `/dev`, `/proc`, `/sys` and `/tmp` mountpoints before mounting
 them, so a freshly formatted root does not fail with "Failed to mount devfs".
