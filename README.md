@@ -60,18 +60,17 @@ the kernel's `CONFIG_RUSTC_VERSION` is 0. The C-only module is an upstream
 supported configuration and works with the current bcachefs on-disk format;
 newer bcachefs releases are expected to require `CONFIG_RUST`.
 
-On x86_64, the installation images also include the halcyon-core
-`broadcom-wl` driver and its prebuilt kernel module. This is the proprietary
-Broadcom STA driver for older Broadcom PCIe Wi-Fi chips. Its package installs
-a modprobe blacklist for the in-tree `b43`, `bcma`, `brcmsmac`, and `brcmfmac`
-drivers so the `wl` driver binds instead, and the live initramfs includes the
-`wl` module so Wi-Fi works when booting from the ISO.
+On x86_64, the installation images use the `linux-halcyon` kernel (CachyOS
+patches plus Apple T2 support) and include the `broadcom-wl` driver and its
+prebuilt module for older Broadcom PCIe Wi-Fi chips, the `firmware-apple`
+package, `t2fanrd` fan control, and the `tiny-dfr` Touch Bar daemon.
 
-Note that this blacklist also disables `brcmfmac`, which is the correct driver
-for newer Broadcom chips such as the BCM4377/4387 used in T2 Macs. The
-proprietary `wl` driver only handles the older BCM43xx/47xx devices. If the
-image is meant for a T2 Mac, the `brcmfmac` blacklist must be removed or made
-conditional.
+Wi-Fi driver selection is automatic at boot. T2 Macs (PCI `106b:1801`) use the
+in-tree `brcmfmac` driver and the Apple firmware; other machines use the
+proprietary `wl` driver and its blacklist for the conflicting in-tree drivers.
+The selection is written to `/run/modprobe.d` before udev starts in the
+initramfs and applied again by the `halcyon-wifi` dinit service after the real
+root filesystem is mounted.
 
 They are mainly intended for handling of distro releases, but can be
 used by advanced users to create their own images. They are also useful

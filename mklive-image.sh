@@ -35,27 +35,32 @@ for _arg in "$@"; do
     _prev_arg="$_arg"
 done
 
-HARDWARE_PKGS=
-case "$IMAGE_ARCH" in
-    x86_64) HARDWARE_PKGS="broadcom-wl linux-stable-broadcom-wl-bin" ;;
-esac
-
+# Halcyon x86_64 images use the linux-halcyon kernel (CachyOS patches plus
+# Apple T2 support). Other architectures keep the regular linux-stable kernel.
 if [ -z "$KERNEL_PKGS" ]; then
-    KERNEL_PKGS="linux-stable"
-    if [ "$IMAGE" != "minimal" ]; then
-        KERNEL_PKGS="$KERNEL_PKGS linux-stable-zfs-bin"
-    fi
+    case "$IMAGE_ARCH" in
+        x86_64) KERNEL_PKGS="linux-halcyon" ;;
+        *) KERNEL_PKGS="linux-stable" ;;
+    esac
 fi
 
-# Halcyon ships bcachefs support in the regular installation media. The
-# prebuilt kernel modules come from the halcyon-core repository and are
-# built against the same linux-stable release as the rest of the image.
-readonly FILESYSTEM_PKGS="bcachefs-tools linux-stable-bcachefs-bin"
+case "$IMAGE_ARCH" in
+    x86_64)
+        # bcachefs and broadcom-wl are out-of-tree modules on linux-halcyon.
+        FILESYSTEM_PKGS="bcachefs-tools linux-halcyon-bcachefs-bin"
+        HARDWARE_PKGS="broadcom-wl linux-halcyon-broadcom-wl-bin firmware-apple t2fanrd tiny-dfr"
+        ;;
+    *)
+        FILESYSTEM_PKGS="bcachefs-tools"
+        HARDWARE_PKGS=
+        ;;
+esac
 
 # Keep these on every image: the installer ensures they are present on the
 # target regardless of the desktop choice.
 readonly REQUIRED_PKGS="uutils-coreutils ckms"
 
+readonly FILESYSTEM_PKGS
 readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${REQUIRED_PKGS} ${HARDWARE_PKGS} ${EXTRA_PKGS}"
 
 case "$IMAGE" in

@@ -52,18 +52,34 @@ fi
 msg "Building bcachefs userspace tools..."
 (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" pkg halcyon-core/bcachefs-tools)
 
-msg "Building the prebuilt bcachefs kernel module..."
-(cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
-    pkg halcyon-core/linux-stable-bcachefs-bin)
-
 if [ "$ARCH" = "x86_64" ]; then
+    msg "Building the linux-halcyon kernel..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-core/linux-halcyon)
+
+    msg "Building the linux-halcyon bcachefs module..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-core/linux-halcyon-bcachefs-bin)
+
     msg "Building the Broadcom-wl driver..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
         pkg halcyon-core/broadcom-wl)
 
-    msg "Building the prebuilt Broadcom-wl kernel module..."
+    msg "Building the linux-halcyon Broadcom-wl module..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
-        pkg halcyon-core/linux-stable-broadcom-wl-bin)
+        pkg halcyon-core/linux-halcyon-broadcom-wl-bin)
+
+    msg "Building Apple T2 firmware..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/firmware-apple)
+
+    msg "Building T2 fan control..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/t2fanrd)
+
+    msg "Building the Touch Bar daemon..."
+    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+        pkg halcyon-extra/tiny-dfr)
 fi
 
 msg "Building uutils-coreutils..."
