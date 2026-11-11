@@ -221,6 +221,11 @@ run_apk "${ROOT_DIR}" add ${PACKAGES} ${TARGET_PACKAGES} \
 # Help reads /usr/share/man, so the SDE image needs the Serenity manual tree
 # (serenity-desktop installs it). Fail here rather than shipping an image where
 # Help opens its Error dialog.
+if [ -d "${ROOT_DIR}/usr/lib/sde/bin" ]; then
+    # cbuild compresses everything under /usr/share/man, but Serenity's Help
+    # opens the .md manuals directly and cannot read gzip streams.
+    find "${ROOT_DIR}/usr/share/man" -name '*.md.gz' -exec gunzip -f {} +
+fi
 if [ -d "${ROOT_DIR}/usr/lib/sde/bin" ] && [ ! -f "${ROOT_DIR}/usr/share/man/man7/Help-index.md" ]; then
     die "the SDE Help manual pages are missing from /usr/share/man"
 fi
