@@ -6,8 +6,8 @@
 /home/jmalcolm/Projects/halcyon/halcyon-linux-x86_64-LIVE-20261111-sde-r19.iso
 ```
 
-- Size: 2227632128 bytes (2.1 GiB)
-- SHA-256: 1106ee1057d062539282b2a57551bbd269cb60f6327b25900fc70327a76889bd
+- Size: 2116790272 bytes (2.0 GiB)
+- SHA-256: 43e038dcbbe018e3ef49c6444593a40b419c7e572f53b720ccbbc480b31addac
 - Volume ID: HALCYON_LIVE
 - Release tag: 0.1.12
 
@@ -47,6 +47,8 @@
 - The initrd contains `wl.ko`, `brcmfmac.ko`, `brcmutil.ko`,
   `000-halcyon-wifi` and `wifi-select`.
 - The SDE `.md` manuals are decompressed in the image so Help can read them.
+- NVIDIA GPU firmware is kept out of the initrd (it stays in the rootfs), which
+  keeps the ISO under GitHub's 2 GiB release asset limit.
 
 ## Not exercised in this build
 
