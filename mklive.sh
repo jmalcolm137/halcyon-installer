@@ -329,9 +329,30 @@ copy_initramfs || die "failed to copy initramfs files"
 
 # generate initramfs
 msg "Generating initial ramdisk and copying kernel..."
-chroot "${ROOT_DIR}" mkinitramfs -o /tmp/initrd "${KERNVER}" \
-    || die "unable to generate ramdisk"
-    
+
+# The whole firmware tree goes into the ramdisk with MODULES=most, but the
+# NVIDIA GPU blobs are about 100 MiB and are not needed until the real root
+# is mounted. Keep them out of the ramdisk (the rootfs still ships them) so
+# the ISO stays under GitHub's 2 GiB release asset limit.
+HELD_FIRMWARE="${ROOT_DIR}/.initrd-held-firmware"
+rm -rf "${HELD_FIRMWARE}"
+mkdir -p "${HELD_FIRMWARE}"
+if [ -d "${ROOT_DIR}/usr/lib/firmware/nvidia" ]; then
+    mv "${ROOT_DIR}/usr/lib/firmware/nvidia" "${HELD_FIRMWARE}/nvidia"
+fi
+
+if ! chroot "${ROOT_DIR}" mkinitramfs -o /tmp/initrd "${KERNVER}"; then
+    [ -d "${HELD_FIRMWARE}/nvidia" ] && \
+        mv "${HELD_FIRMWARE}/nvidia" "${ROOT_DIR}/usr/lib/firmware/nvidia"
+    rm -rf "${HELD_FIRMWARE}"
+    die "unable to generate ramdisk"
+fi
+
+if [ -d "${HELD_FIRMWARE}/nvidia" ]; then
+    mv "${HELD_FIRMWARE}/nvidia" "${ROOT_DIR}/usr/lib/firmware/nvidia"
+fi
+rm -rf "${HELD_FIRMWARE}"
+
 mv "${ROOT_DIR}/tmp/initrd" "${LIVE_DIR}"
 
 for f in "${ROOT_DIR}/boot/"vmlinu[xz]-"${KERNVER}"; do
