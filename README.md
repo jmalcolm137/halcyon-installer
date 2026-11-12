@@ -11,17 +11,19 @@ sibling `cports` checkout. Installation images (`base`, `gnome`, `plasma` and
 kernel module, so the live environment can create, mount, fsck and repair
 bcachefs filesystems.
 
-The live environment and the installed target use the online repositories
-configured in `live-overlay/etc/apk/repositories.d`:
+The live environment and the installed target use the online repositories:
 
 * `https://repo.halcyon-linux.org/halcyon-core`
 * `https://repo.halcyon-linux.org/halcyon-extra`
 
-They are written as `v3` repositories, so apk fetches the signed
-`Packages.adb` index rather than `APKINDEX.tar.gz`. The installer also writes
-these files explicitly into the target, so the configuration survives reboot.
-The image build itself still uses the packages built from the sibling `cports`
-checkout.
+They are configured by the `halcyon-repo-core` and `halcyon-repo-extra`
+packages, whose templates live in the `halcyon-core` cports category. Those
+packages install `v3` repository files under `/etc/apk/repositories.d`, so
+apk fetches the signed `Packages.adb` index rather than `APKINDEX.tar.gz`. The
+live image includes both packages and the installer adds them to the target
+world, so the configuration survives reboot. The Chimera repositories come
+from `live-overlay/etc/apk/repositories.d/00-chimera.list`. The image build
+itself still uses the packages built from the sibling `cports` checkout.
 
 The `sde` image is the Serenity Desktop Environment image. It installs
 `serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, `opencode`,

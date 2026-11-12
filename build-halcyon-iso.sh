@@ -86,6 +86,12 @@ msg "Building uutils-coreutils..."
 (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
     pkg halcyon-extra/uutils-coreutils)
 
+msg "Building Halcyon repository packages..."
+(cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+    pkg halcyon-core/halcyon-repo-core)
+(cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+    pkg halcyon-core/halcyon-repo-extra)
+
 if [ "$IMAGE" = "sde" ]; then
     msg "Building the Serenity Desktop Environment..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
@@ -106,10 +112,6 @@ if [ "$IMAGE" = "sde" ]; then
     msg "Building Halcyon Setup..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
         pkg halcyon-core/halcyon-setup)
-
-    msg "Building Crush..."
-    (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
-        pkg halcyon-extra/crush)
 fi
 
 REPO="$CPORTS/packages/halcyon-core"

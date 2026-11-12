@@ -64,9 +64,15 @@ case "$IMAGE_ARCH" in
         ;;
 esac
 
+# The repository configuration is package-managed on x86_64.
+REPO_PKGS=
+case "$IMAGE_ARCH" in
+    x86_64) REPO_PKGS="halcyon-repo-core halcyon-repo-extra" ;;
+esac
+
 # Keep these on every image: the installer ensures they are present on the
 # target regardless of the desktop choice.
-readonly REQUIRED_PKGS="uutils-coreutils ckms base-shells bcachefs-ckms"
+readonly REQUIRED_PKGS="uutils-coreutils ckms base-shells bcachefs-ckms ${REPO_PKGS}"
 
 readonly FILESYSTEM_PKGS
 readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${REQUIRED_PKGS} ${HARDWARE_PKGS} ${EXTRA_PKGS}"
