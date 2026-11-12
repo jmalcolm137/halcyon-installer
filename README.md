@@ -25,7 +25,7 @@ checkout.
 
 The `sde` image is the Serenity Desktop Environment image. It installs
 `serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, `opencode`,
-`crush`, the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
+the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
 Wayland session. The live initramfs creates a dedicated `live` group and adds
 the autologin user to it. The live session also installs a PolicyKit rule that
 lets the active local non-root user use `pkexec` without a desktop
