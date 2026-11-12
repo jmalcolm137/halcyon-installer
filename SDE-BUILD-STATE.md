@@ -1,5 +1,33 @@
 # SDE ISO build state
 
+## 0.1.14 (package-managed repository configuration)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261112-sde.iso
+```
+
+- Size: 2094974976 bytes (2.0 GiB)
+- SHA-256: 7b52db9ee616ed6fc55b9046bbd8d1aa5b58ea3afb23736fd542a36c16a2db67
+- Volume ID: HALCYON_LIVE
+- Release tag: 0.1.14
+- GitHub release asset headroom: 52,508,672 bytes under the 2 GiB limit.
+
+- The Halcyon repository configuration is package-managed. The live image
+  includes `halcyon-repo-core` and `halcyon-repo-extra`; the installer adds
+  both to the target world. They install
+  `/etc/apk/repositories.d/20-halcyon-core.list`,
+  `/etc/apk/repositories.d/21-halcyon-extra.list`, and the Halcyon key.
+- x86_64 uses `linux-halcyon` 7.3.1-r1. `linux-halcyon-devel` is installed on
+  the target from the online repo for CKMS.
+- The live image includes precompiled bcachefs/Broadcom modules for the live
+  session. The target removes them and builds the modules from
+  `bcachefs-ckms`/`broadcom-wl-ckms` during initramfs creation.
+- `/etc/shells` is regenerated and verified in the target.
+- `halcyon-setup` 0.1.0-r16.
+- `crush` is not installed in the image.
+- The online repositories were updated with the kernel, devel, repository
+  packages, and image packages before this release.
+
 ## 0.1.13 (online repos, CKMS target modules)
 
 ```
