@@ -39,16 +39,24 @@ done
 # Apple T2 support). Other architectures keep the regular linux-stable kernel.
 if [ -z "$KERNEL_PKGS" ]; then
     case "$IMAGE_ARCH" in
-        x86_64) KERNEL_PKGS="linux-halcyon" ;;
-        *) KERNEL_PKGS="linux-stable" ;;
+        x86_64)
+            # linux-halcyon-devel provides the kernel headers used by CKMS
+            # when building the installed system's modules.
+            KERNEL_PKGS="linux-halcyon linux-halcyon-devel"
+            ;;
+        *)
+            KERNEL_PKGS="linux-stable linux-stable-devel"
+            ;;
     esac
 fi
 
 case "$IMAGE_ARCH" in
     x86_64)
         # bcachefs and broadcom-wl are out-of-tree modules on linux-halcyon.
+        # The precompiled modules are for the live session only; the installer
+        # removes them from the target and rebuilds from the CKMS sources.
         FILESYSTEM_PKGS="bcachefs-tools linux-halcyon-bcachefs-bin"
-        HARDWARE_PKGS="broadcom-wl linux-halcyon-broadcom-wl-bin firmware-apple t2fanrd tiny-dfr"
+        HARDWARE_PKGS="broadcom-wl broadcom-wl-ckms linux-halcyon-broadcom-wl-bin firmware-apple t2fanrd tiny-dfr"
         ;;
     *)
         FILESYSTEM_PKGS="bcachefs-tools"
@@ -58,7 +66,7 @@ esac
 
 # Keep these on every image: the installer ensures they are present on the
 # target regardless of the desktop choice.
-readonly REQUIRED_PKGS="uutils-coreutils ckms"
+readonly REQUIRED_PKGS="uutils-coreutils ckms base-shells bcachefs-ckms"
 
 readonly FILESYSTEM_PKGS
 readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${REQUIRED_PKGS} ${HARDWARE_PKGS} ${EXTRA_PKGS}"

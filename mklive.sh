@@ -14,7 +14,7 @@
 
 . ./lib.sh
 
-PACKAGES="base-full base-live linux-stable"
+PACKAGES="base-full base-live linux-halcyon base-shells"
 HOST_PACKAGES="xorriso mtools dosfstools"
 TARGET_PACKAGES=
 
@@ -42,7 +42,7 @@ Options:
  -f FLAVOR    Flavor name to include in default iso name
  -r REPO      Path to apk repository.
  -k DIR       Path to apk repository public key directory.
- -p PACKAGES  List of packages to install (default: base-full linux-stable).
+ -p PACKAGES  List of packages to install (default: base-full linux-halcyon base-shells).
  -s FSTYPE    Filesystem to use (squashfs or erofs, default: erofs)
  -h           Print this message.
 EOF
@@ -259,6 +259,13 @@ if [ -d live-overlay ]; then
     msg "Applying tracked live-session overlay..."
     cp -a live-overlay/. "${ROOT_DIR}/" || die "failed to apply tracked live-session overlay"
 fi
+
+# The base-shells trigger normally does this during the apk transaction, but
+# make it explicit so the live rootfs (and the target copied from it) never
+# ends up without a shell database.
+msg "Regenerating /etc/shells..."
+chroot "${ROOT_DIR}" /usr/local/bin/halcyon-regenerate-shells \
+    || die "failed to regenerate /etc/shells"
 
 # determine kernel version
 if [ -z "$KERNVER" ]; then

@@ -188,7 +188,7 @@ msg "Mounting pseudo-filesystems..."
 mount_pseudo
 
 msg "Installing target packages..."
-run_apk "${ROOT_DIR}" add ${PKG_BASE} ${PACKAGES} \
+run_apk "${ROOT_DIR}" add ${PKG_BASE} base-shells ${PACKAGES} \
     || die "failed to install full rootfs"
 
 msg "Cleaning up..."

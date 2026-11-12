@@ -1,0 +1,29 @@
+#!/bin/sh
+# Regenerate /etc/shells from the shells.d symlink trees.
+#
+# This mirrors the base-shells package trigger, but can be run explicitly by
+# the live image build and by the installer after package changes so the
+# installed system always has a usable shell database.
+
+set -eu
+
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+
+for shell in /etc/shells.d/* /usr/lib/shells.d/*; do
+    [ -e "$shell" ] || continue
+    shp=$(readlink "$shell" 2>/dev/null || :)
+    [ -n "$shp" ] || continue
+    [ -x "$shp" ] || continue
+    case "$shp" in
+        /usr/bin*|/usr/sbin*)
+            printf '%s\n' "$shp" >> "$tmp"
+            printf '%s\n' "${shp#/usr}" >> "$tmp"
+            ;;
+        /*)
+            printf '%s\n' "$shp" >> "$tmp"
+            ;;
+    esac
+done
+
+sort -u "$tmp" > /etc/shells

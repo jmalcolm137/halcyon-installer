@@ -7,9 +7,21 @@ code is kept as close to upstream as possible.
 Halcyon installation media are built from the regular Chimera package
 repositories plus the `halcyon-core` and `halcyon-extra` repositories from the
 sibling `cports` checkout. Installation images (`base`, `gnome`, `plasma` and
-`sde`) include `bcachefs-tools` and the prebuilt `linux-stable-bcachefs-bin`
+`sde`) include `bcachefs-tools` and the prebuilt `linux-halcyon-bcachefs-bin`
 kernel module, so the live environment can create, mount, fsck and repair
 bcachefs filesystems.
+
+The live environment and the installed target use the online repositories
+configured in `live-overlay/etc/apk/repositories.d`:
+
+* `https://repo.halcyon-linux.org/halcyon-core`
+* `https://repo.halcyon-linux.org/halcyon-extra`
+
+They are written as `v3` repositories, so apk fetches the signed
+`Packages.adb` index rather than `APKINDEX.tar.gz`. The installer also writes
+these files explicitly into the target, so the configuration survives reboot.
+The image build itself still uses the packages built from the sibling `cports`
+checkout.
 
 The `sde` image is the Serenity Desktop Environment image. It installs
 `serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, `opencode`,
@@ -41,10 +53,16 @@ the SDE Help app can open its index and application pages. `mklive.sh` fails
 the image build if the SDE prefix exists but
 `/usr/share/man/man7/Help-index.md` is missing.
 
-Every image includes `uutils-coreutils`, `ckms`, `bcachefs-tools` and the
-prebuilt bcachefs kernel module. The installer also adds those packages to the
-target explicitly, independent of the Desktop checkbox, so a console-only
-installation still has the GNU userland and bcachefs tooling.
+Every image includes `uutils-coreutils`, `ckms`, `bcachefs-tools`, the
+`bcachefs-ckms` sources, and `base-shells`. The prebuilt bcachefs and Broadcom
+modules are for the live session only. The installer removes them from the
+target, keeps `bcachefs-ckms` and `broadcom-wl-ckms`, and runs the CKMS kernel
+hook before `update-initramfs`, so the installed system's modules are built for
+its own kernel and included in its initramfs.
+
+The live image regenerates `/etc/shells` after applying the overlay. The
+installer regenerates and verifies it again in the target, so `/bin/sh` is
+always a valid login shell after reboot.
 
 The tracked live overlay also ships a `chimera-chroot` override that creates
 the target's `/dev`, `/proc`, `/sys` and `/tmp` mountpoints before mounting
@@ -53,8 +71,8 @@ It provides a `default` cursor theme inheriting Adwaita as well; without it the
 SDE's cursor manager loads only the fallback arrow and never shows the resize
 cursors.
 
-The prebuilt module is built with `BCACHEFS_RUST=0`: Chimera's `linux-stable`
-is built without `CONFIG_RUST`, and the vendored Rust support in bcachefs
+The prebuilt module is built with `BCACHEFS_RUST=0`: the Halcyon kernel is
+built without `CONFIG_RUST`, and the vendored Rust support in bcachefs
 1.39.7 generates a target specification that the current rustc rejects when
 the kernel's `CONFIG_RUSTC_VERSION` is 0. The C-only module is an upstream
 supported configuration and works with the current bcachefs on-disk format;
@@ -98,11 +116,12 @@ More tools may be added over time.
 
 ## Building the Halcyon installation ISO
 
-`build-halcyon-iso.sh` builds the bcachefs packages (and, on x86_64, the
-Broadcom-wl packages) from the sibling `cports` checkout, builds the SDE and
-ladybird packages for the `sde` image, and then creates the installation ISO.
-It must be run as a regular user; it uses docker or podman for the root-only
-parts of `mklive.sh`.
+`build-halcyon-iso.sh` builds the Halcyon kernel and the bcachefs/Broadcom
+packages from the sibling `cports` checkout, builds the SDE and ladybird
+packages for the `sde` image, and then creates the installation ISO. It must
+be run as a regular user; it uses docker or podman for the root-only parts of
+`mklive.sh`. The Halcyon kernel is x86_64-only and is the longest part of the
+build.
 
 The following prerequisites must be available:
 
@@ -136,6 +155,11 @@ packages, and `keys` must contain the matching public key):
     -r https://repo.chimera-linux.org/current/user \
     -k keys -o halcyon-linux-x86_64-LIVE-$(date '+%Y%m%d')-sde.iso
 ```
+
+The `-r` paths above are only used while assembling the image. The final root
+filesystem uses `live-overlay/etc/apk/repositories.d`, and the installer writes
+the same configuration into the target, so both the live session and the
+installed system point at the online repositories.
 
 ## Bootstrapping the system with apk
 
