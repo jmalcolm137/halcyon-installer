@@ -40,12 +40,12 @@ done
 if [ -z "$KERNEL_PKGS" ]; then
     case "$IMAGE_ARCH" in
         x86_64)
-            # linux-halcyon-devel provides the kernel headers used by CKMS
-            # when building the installed system's modules.
-            KERNEL_PKGS="linux-halcyon linux-halcyon-devel"
+            # The kernel headers are installed on the target from the online
+            # repositories; keeping them out of the live image saves ISO space.
+            KERNEL_PKGS="linux-halcyon"
             ;;
         *)
-            KERNEL_PKGS="linux-stable linux-stable-devel"
+            KERNEL_PKGS="linux-stable"
             ;;
     esac
 fi

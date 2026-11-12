@@ -56,9 +56,10 @@ the image build if the SDE prefix exists but
 Every image includes `uutils-coreutils`, `ckms`, `bcachefs-tools`, the
 `bcachefs-ckms` sources, and `base-shells`. The prebuilt bcachefs and Broadcom
 modules are for the live session only. The installer removes them from the
-target, keeps `bcachefs-ckms` and `broadcom-wl-ckms`, and runs the CKMS kernel
-hook before `update-initramfs`, so the installed system's modules are built for
-its own kernel and included in its initramfs.
+target, keeps `bcachefs-ckms` and `broadcom-wl-ckms`, installs
+`linux-halcyon-devel` from the online repositories for the kernel headers, and
+runs the CKMS kernel hook before `update-initramfs`. The installed system's
+modules are therefore built for its own kernel and included in its initramfs.
 
 The live image regenerates `/etc/shells` after applying the overlay. The
 installer regenerates and verifies it again in the target, so `/bin/sh` is
