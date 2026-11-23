@@ -1,5 +1,28 @@
 # SDE ISO build state
 
+## 0.1.16 (boot directly to the desktop)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261123-sde.iso
+```
+
+- Size: 2095026176 bytes (2.0 GiB)
+- SHA-256: 03cd4e8a41e3c5a2cf4f1999fab1c9dfe5bf24798cb6f4181e4f277b8e38edda
+- Volume ID: HALCYON_LIVE
+- Release tag: 0.1.16
+- GitHub release asset headroom: 52,457,472 bytes under the 2 GiB limit.
+
+- SDDM autologin now reaches the SDE desktop without the greeter. The
+  `sddm-autologin` PAM stack runs `pam_shells`, and the live user's shell
+  (`/usr/local/bin/live-sh`) was not in `/etc/shells`, so autologin failed and
+  SDDM showed the greeter. The live initramfs now adds the live user's shell to
+  the live root's `/etc/shells`; the installer still regenerates the target's
+  copy from the `shells.d` links.
+- The live `anon` and `root` passwords are now `action` (previously `chimera`).
+- Packages are unchanged from 0.1.15.
+- Verified in QEMU/KVM: the ISO boots straight to the SDE desktop as `anon`;
+  `su` accepts `action` for `anon` and `root` and rejects `chimera`.
+
 ## 0.1.15 (partition-editor rename and fixes, halcyon-setup Win95 UX polish)
 
 ```
@@ -134,7 +157,7 @@
 ## Not exercised in this build
 
 - Automated SDDM login: the greeter prompts for the live user password, so the
-  desktop was not entered during the headless boot test.
+  desktop was not entered during the headless boot test (fixed in 0.1.16).
 - Real T2 hardware. Wi-Fi selection was unit-tested with a fake sysfs tree:
   T2 blacklists `wl` and loads `brcmfmac`; non-T2 blacklists `brcmfmac` and
   loads `wl`.

@@ -12,7 +12,7 @@ Chimera_User() {
     log_begin_msg "Setting up user"
 
     USERNAME="anon"
-    USERPASS="chimera"
+    USERPASS="action"
     # Keep /bin/sh (mksh) for the live user. The SDE Terminal filters the
     # environment it passes to the shell and drops ENV, so use a tiny live
     # wrapper that sets ENV=/etc/mkshrc and then execs /bin/sh. The mkshrc is
@@ -51,6 +51,14 @@ Chimera_User() {
             -e "s|@USER@|${USERNAME}|g" \
             -e "s|@PASSWORD@|${USERPASS}|g" \
             "/lib/live/data/issue.in" > /root/etc/issue
+    fi
+
+    # The sddm-autologin PAM stack runs pam_shells, which rejects a user whose
+    # shell is not in /etc/shells; SDDM then falls back to the greeter. Only
+    # the live root's /etc/shells is changed here: the installer regenerates
+    # the target's copy from the shells.d links.
+    if ! grep -qx "$USERSHELL" /root/etc/shells 2>/dev/null; then
+        echo "$USERSHELL" >> /root/etc/shells
     fi
 
     chroot /root useradd -m -c "$USERNAME" -s "$USERSHELL" "$USERNAME"

@@ -47,6 +47,11 @@ package itself remains installer-agnostic and works on a normal Chimera
 installation. The live image also sets `ENV=/etc/mkshrc` in `/etc/environment`
 and uses a small `/usr/local/bin/live-sh` wrapper as the passwd shell, because
 the SDE Terminal filters `ENV` out of the environment it passes to the shell.
+The live initramfs adds that wrapper to the live root's `/etc/shells`; the
+`sddm-autologin` PAM stack runs `pam_shells`, and without the entry SDDM falls
+back to the greeter instead of starting the desktop. The live `anon` and `root`
+passwords are `action` (override with `live-password=` on the kernel command
+line).
 The wrapper sets `ENV` and then execs `/bin/sh`, so the SDE Terminal gets the
 GNU command set without changing the real shell.
 
