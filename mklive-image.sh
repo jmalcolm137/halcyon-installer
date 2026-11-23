@@ -99,12 +99,12 @@ case "$IMAGE" in
         # generic profile hook. The live overlay adds /etc/mkshrc and live-sh,
         # which set ENV and exec /bin/sh, so the SDE Terminal sources the
         # hook. Keep the package installer-agnostic.
-        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde sparted halcyon-setup"
+        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde partition-editor halcyon-setup"
         if [ "$IMAGE_ARCH" = "x86_64" ]; then
             PKGS="$PKGS opencode"
         fi
-        # Partition/filesystem tools SParted drives. They are runtime
-        # dependencies of sparted as well, but list them explicitly so the
+        # Partition/filesystem tools Partition Editor drives. They are runtime
+        # dependencies of partition-editor as well, but list them explicitly so the
         # live image keeps them if that package metadata ever changes.
         PKGS="$PKGS parted e2fsprogs dosfstools exfatprogs ntfs-3g btrfs-progs"
         PKGS="$PKGS xfsprogs f2fs-tools jfsutils lvm2 hfsutils"

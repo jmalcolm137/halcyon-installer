@@ -1,5 +1,30 @@
 # SDE ISO build state
 
+## 0.1.15 (partition-editor rename and fixes, halcyon-setup Win95 UX polish)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261122-sde.iso
+```
+
+- Size: 2095026176 bytes (2.0 GiB)
+- SHA-256: e20dfda9c70fbbe2517fea7773aa787c6b1c070e06a54fb0344325ead14b2694
+- Volume ID: HALCYON_LIVE
+- Release tag: 0.1.15
+- GitHub release asset headroom: 52,457,472 bytes under the 2 GiB limit.
+
+- Renamed `sparted` to `partition-editor` (`0.1.0-r0`) with fixes for the Create
+  Partition Table use-after-move crash, clipped dialog warnings, File System
+  Support table display, 1 MiB partition alignment, newly created partition
+  formatting, unsafe start-move resizing, device filtering (`fd*`/`sr*`/`zram*`),
+  and launcher environment handling.
+- Updated `halcyon-setup` to `0.1.0-r18` (depends on `partition-editor`) with
+  Windows 95 wizard UX polish: etched grooves and sidebar gradient, dynamic
+  per-step header subtitles, fixed Finish/Cancel/Remove button states, floppy
+  and optical device filtering, double-click mount assignment, and immediate
+  POSIX username validation.
+- Updated `serenity-desktop` to `0.1.0-r5` (`libglvnd` dependency) and
+  `serenity-lagom` `0.1.0-r4`.
+
 ## 0.1.14 (package-managed repository configuration)
 
 ```

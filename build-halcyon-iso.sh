@@ -101,9 +101,9 @@ if [ "$IMAGE" = "sde" ]; then
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
         pkg halcyon-extra/ladybird-sde)
 
-    msg "Building SParted..."
+    msg "Building Partition Editor..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
-        pkg halcyon-extra/sparted)
+        pkg halcyon-extra/partition-editor)
 
     msg "Building opencode..."
     (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
