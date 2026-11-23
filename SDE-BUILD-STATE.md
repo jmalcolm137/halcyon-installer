@@ -9,7 +9,11 @@
 - Size: 2095028224 bytes (2.0 GiB)
 - SHA-256: b9f64a9c05a58d3da1681bea93235e368f36d219baf44aa3a15fb799b975bfa4
 - Volume ID: HALCYON_LIVE
-- Not yet tagged or published.
+- Release tag: 0.1.17
+- GitHub release asset headroom: 52,455,424 bytes under the 2 GiB limit.
+- The online repositories were updated before this release: `broadcom-wl`
+  6.30.223.271-r3, `halcyon-setup` 0.1.0-r17/r18 and `partition-editor`
+  0.1.0-r0 (required by `halcyon-setup` r18) had not been published.
 
 - Fixed Wi-Fi on pre-T2 Broadcom Macs (reported on a 2009 MacBook Pro,
   BCM4322). The initramfs `ORDER` runs `init-top/udev` before
