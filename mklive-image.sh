@@ -99,7 +99,11 @@ case "$IMAGE" in
         # generic profile hook. The live overlay adds /etc/mkshrc and live-sh,
         # which set ENV and exec /bin/sh, so the SDE Terminal sources the
         # hook. Keep the package installer-agnostic.
-        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde partition-editor halcyon-setup"
+        #
+        # NetworkManager is listed explicitly so the live session (and its
+        # dinit service, enabled by the live initramfs) never depends on it
+        # arriving as an indirect dependency.
+        PKGS="${BASE_PKGS} sddm sddm-default-cage sddm-theme-none serenity-desktop ladybird-sde partition-editor halcyon-setup networkmanager"
         if [ "$IMAGE_ARCH" = "x86_64" ]; then
             PKGS="$PKGS opencode"
         fi

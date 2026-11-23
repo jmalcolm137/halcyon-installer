@@ -1,5 +1,39 @@
 # SDE ISO build state
 
+## 0.1.17 (pre-T2 Broadcom Wi-Fi fix)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261123-sde-r2.iso
+```
+
+- Size: 2095028224 bytes (2.0 GiB)
+- SHA-256: b9f64a9c05a58d3da1681bea93235e368f36d219baf44aa3a15fb799b975bfa4
+- Volume ID: HALCYON_LIVE
+- Not yet tagged or published.
+
+- Fixed Wi-Fi on pre-T2 Broadcom Macs (reported on a 2009 MacBook Pro,
+  BCM4322). The initramfs `ORDER` runs `init-top/udev` before
+  `init-top/000-halcyon-wifi`, so udev loaded `ssb`/`b43` (or `bcma`) for the
+  card before the runtime blacklist existed and `wl` could not bind. This
+  regressed in 0.1.12, when the static blacklist was replaced by runtime
+  selection.
+- `broadcom-wl` 6.30.223.271-r3: its initramfs hook bakes a static blacklist of
+  `b43`, `b43legacy`, `bcm43xx`, `bcma`, `brcm80211`, `brcmfmac`, `brcmsmac`
+  and `ssb` into the initramfs (valid on T2 too, which defers `brcmfmac` there
+  anyway). On non-T2 machines `wifi-select --apply` also unloads any of those
+  drivers that claimed the card and reloads `wl`.
+- The driver itself is unchanged: the patch series is identical to Arch
+  `broadcom-wl-dkms` 6.30.223.271-50, and `wl.ko` matches the 7.3.1 kernel's
+  `Module.symvers` (134 symbols, no CRC mismatches).
+- Removed `initramfs-tools/hooks/broadcom-wl` from this repository. It shadowed
+  the package's hook of the same name during the image build, and
+  `cleanup_initramfs` then deleted the package's file from the live root.
+- `networkmanager` is now listed explicitly in the SDE image.
+- Verified in QEMU/KVM: boots straight to the desktop; the initrd contains
+  `/etc/modprobe.d/halcyon-wifi-initramfs.conf`; `wl` is loaded and none of the
+  blacklisted drivers are; the `networkmanager` dinit service is STARTED and
+  connected. Not yet verified on BCM4322 hardware.
+
 ## 0.1.16 (boot directly to the desktop)
 
 ```

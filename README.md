@@ -94,9 +94,14 @@ package, `t2fanrd` fan control, and the `tiny-dfr` Touch Bar daemon.
 Wi-Fi driver selection is automatic at boot. T2 Macs (PCI `106b:1801`) use the
 in-tree `brcmfmac` driver and the Apple firmware; other machines use the
 proprietary `wl` driver and its blacklist for the conflicting in-tree drivers.
-The selection is written to `/run/modprobe.d` before udev starts in the
-initramfs and applied again by the `halcyon-wifi` dinit service after the real
-root filesystem is mounted.
+initramfs-tools runs its udev script before the selector, so the
+`broadcom-wl` initramfs hook (shipped by the package) also bakes a static
+blacklist of `b43`, `bcma`, `ssb`, `brcmsmac` and `brcmfmac` into the
+initramfs; otherwise `ssb`/`b43` claim pre-T2 cards such as the 2009 MacBook
+Pro's BCM4322 before `wl` can. The selection is written to `/run/modprobe.d`
+in the initramfs and applied by the `halcyon-wifi` dinit service after the
+real root filesystem is mounted; on non-T2 machines that service also releases
+the card from any in-kernel driver that claimed it and reloads `wl`.
 
 They are mainly intended for handling of distro releases, but can be
 used by advanced users to create their own images. They are also useful
