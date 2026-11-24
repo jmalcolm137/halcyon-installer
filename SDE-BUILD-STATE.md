@@ -1,5 +1,42 @@
 # SDE ISO build state
 
+## 0.1.18 (uutils overlay in /usr/gnulib)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261124-sde.iso
+```
+
+- Size: 2097977344 bytes (2.0 GiB)
+- SHA-256: a5382c43fcd07cfb6b84434cd395d558502bdfdbb2ac03ac1196c921a85a70de
+- Volume ID: HALCYON_LIVE
+- Release tag: 0.1.18
+- GitHub release asset headroom: 49,506,304 bytes under the 2 GiB limit.
+
+- The uutils userland overlay moved from `/usr/bin/gnu` to `/usr/gnulib`.
+  `uutils-coreutils` 0.13.0 installs the multicall binary and its symlinks
+  there, no longer depends on the GNU packages, and no longer links the GNU
+  fallbacks.
+- New `uutils-findutils` 0.11.0 installs `find`, `locate`, `updatedb` and
+  `xargs` into `/usr/gnulib`.
+- New `gnu-compat` 0.1.0-r1 depends on the GNU tools uutils does not provide
+  (not GNU `findutils`) and links them into `/usr/gnubin`; it also depends on
+  `uutils-coreutils` and `uutils-findutils`.
+- `base-files` 0.2-r2 is built from `halcyon-core` (the upstream
+  `main/base-files` is unchanged because cbuild reads it for its chroot
+  passwd/group). It inserts `/usr/gnulib` into PATH after `/usr/local/bin` and
+  before `/usr/bin` in `profile.path`, and installs a bashrc.d snippet so
+  interactive bash gets the same fixup.
+- The live `/etc/mkshrc` applies the same fixup for the SDE Terminal.
+- The online `halcyon-core`/`halcyon-extra` repositories were updated with
+  `base-files` 0.2-r2, `uutils-coreutils` 0.13.0-r0, `uutils-findutils`
+  0.11.0-r0 and `gnu-compat` 0.1.0-r1 before this release.
+
+- Verified in QEMU/KVM: the live `anon` session has
+  `PATH=/usr/local/bin:/usr/gnulib:/usr/bin` in both the SDE Terminal and a
+  login shell; `/usr/bin/gnu` does not exist; `ls` and `find` resolve to
+  `/usr/gnulib` (`uutils coreutils 0.13.0`, `find 0.11.0`); `/usr/gnubin`
+  contains the GNU links; `awk`, `tar` and `m4` resolve from `/usr/bin`.
+
 ## 0.1.17 (pre-T2 Broadcom Wi-Fi fix)
 
 ```
