@@ -26,7 +26,7 @@ from `live-overlay/etc/apk/repositories.d/00-chimera.list`. The image build
 itself still uses the packages built from the sibling `cports` checkout.
 
 The `sde` image is the Serenity Desktop Environment image. It installs
-`serenity-desktop`, the `ladybird-sde` browser, `uutils-coreutils`, `opencode`,
+`serenity-desktop`, the `ladybird-sde` browser, `gnu-compat`, `opencode`,
 the `halcyon-setup` installation wizard, and `sddm` with autologin to the SDE
 Wayland session. The live initramfs creates a dedicated `live` group and adds
 the autologin user to it. The live session also installs a PolicyKit rule that
@@ -39,12 +39,15 @@ pkexec then fails with "Message recipient disconnected from message bus without
 replying". The rule matches `subject.local`, `subject.active` and
 `subject.user` instead. The SDE session defaults to the `blue-grid.png`
 SerenityOS wallpaper (`serenity-lagom` provides the wallpaper resource).
-`uutils-coreutils` installs the uutils/GNU userland overlay in `/usr/bin/gnu`;
-its profile hook prepends that directory to `PATH` for the live `anon` user.
-The live user keeps `/bin/sh` (mksh). The live overlay installs
-`/etc/mkshrc`, which sources the generic `uutils-coreutils` profile hook; the
-package itself remains installer-agnostic and works on a normal Chimera
-installation. The live image also sets `ENV=/etc/mkshrc` in `/etc/environment`
+`uutils-coreutils` installs the Rust utilities in `/usr/gnulib`, and
+`uutils-findutils` puts `find`, `locate`, `updatedb` and `xargs` alongside
+them. `gnu-compat` pulls in the GNU tools uutils does not implement and links
+them into the same directory. `base-files` puts `/usr/gnulib` on `PATH` after
+`/usr/local/bin` and before `/usr/bin`, for login and interactive shells. The
+live user keeps `/bin/sh` (mksh). The live overlay installs `/etc/mkshrc`,
+which sources the `base-files` PATH fixup; the packages themselves remain
+installer-agnostic and work on a normal Chimera installation. The live image
+also sets `ENV=/etc/mkshrc` in `/etc/environment`
 and uses a small `/usr/local/bin/live-sh` wrapper as the passwd shell, because
 the SDE Terminal filters `ENV` out of the environment it passes to the shell.
 The live initramfs adds that wrapper to the live root's `/etc/shells`; the
@@ -60,7 +63,8 @@ the SDE Help app can open its index and application pages. `mklive.sh` fails
 the image build if the SDE prefix exists but
 `/usr/share/man/man7/Help-index.md` is missing.
 
-Every image includes `uutils-coreutils`, `ckms`, `bcachefs-tools`, the
+Every image includes `gnu-compat` (which brings in `uutils-coreutils` and
+`uutils-findutils`), `ckms`, `bcachefs-tools`, the
 `bcachefs-ckms` sources, and `base-shells`. The prebuilt bcachefs and Broadcom
 modules are for the live session only. The installer removes them from the
 target, keeps `bcachefs-ckms` and `broadcom-wl-ckms`, installs

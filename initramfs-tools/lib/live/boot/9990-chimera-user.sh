@@ -15,8 +15,8 @@ Chimera_User() {
     USERPASS="action"
     # Keep /bin/sh (mksh) for the live user. The SDE Terminal filters the
     # environment it passes to the shell and drops ENV, so use a tiny live
-    # wrapper that sets ENV=/etc/mkshrc and then execs /bin/sh. The mkshrc is
-    # installed by uutils-coreutils and sources its PATH overlay.
+    # wrapper that sets ENV=/etc/mkshrc and then execs /bin/sh. The live
+    # overlay installs the mkshrc, which sources the base-files PATH fixup.
     if [ -x /root/usr/local/bin/live-sh ]; then
         USERSHELL="/usr/local/bin/live-sh"
     elif [ -x /root/bin/sh ]; then
@@ -94,7 +94,7 @@ Chimera_User() {
     # pam_env reads /etc/environment for the sddm session. mksh only reads an
     # rc file named by ENV; the live-sh wrapper sets it for the SDE Terminal,
     # and this keeps it set for login shells and other mksh sessions. The
-    # /etc/mkshrc file is installed by uutils-coreutils.
+    # /etc/mkshrc file is installed by the live overlay.
     if [ -d /root/etc ] && ! grep -q '^ENV=' /root/etc/environment 2>/dev/null; then
         echo 'ENV=/etc/mkshrc' >> /root/etc/environment
     fi

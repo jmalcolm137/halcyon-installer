@@ -72,7 +72,7 @@ esac
 
 # Keep these on every image: the installer ensures they are present on the
 # target regardless of the desktop choice.
-readonly REQUIRED_PKGS="uutils-coreutils ckms base-shells bcachefs-ckms ${REPO_PKGS}"
+readonly REQUIRED_PKGS="gnu-compat ckms base-shells bcachefs-ckms ${REPO_PKGS}"
 
 readonly FILESYSTEM_PKGS
 readonly BASE_PKGS="base-full base-live ${KERNEL_PKGS} ${FILESYSTEM_PKGS} ${REQUIRED_PKGS} ${HARDWARE_PKGS} ${EXTRA_PKGS}"
@@ -95,10 +95,11 @@ case "$IMAGE" in
         # pick sddm-default-kwin, which pulls in Plasma/KDE even though the
         # image does not ask for plasma-desktop.
         #
-        # uutils-coreutils installs the GNU userland in /usr/bin/gnu and a
-        # generic profile hook. The live overlay adds /etc/mkshrc and live-sh,
-        # which set ENV and exec /bin/sh, so the SDE Terminal sources the
-        # hook. Keep the package installer-agnostic.
+        # gnu-compat installs the uutils userland in /usr/gnulib (with the GNU
+        # tools uutils does not implement); base-files puts that directory on
+        # PATH. The live overlay adds /etc/mkshrc and live-sh, which set ENV
+        # and exec /bin/sh, so the SDE Terminal sources the base-files PATH
+        # fixup too. Keep the packages installer-agnostic.
         #
         # NetworkManager is listed explicitly so the live session (and its
         # dinit service, enabled by the live initramfs) never depends on it

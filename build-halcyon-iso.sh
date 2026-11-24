@@ -86,6 +86,14 @@ msg "Building uutils-coreutils..."
 (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
     pkg halcyon-extra/uutils-coreutils)
 
+msg "Building uutils-findutils..."
+(cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+    pkg halcyon-extra/uutils-findutils)
+
+msg "Building gnu-compat..."
+(cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+    pkg halcyon-extra/gnu-compat)
+
 msg "Building Halcyon repository packages..."
 (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
     pkg halcyon-core/halcyon-repo-core)
