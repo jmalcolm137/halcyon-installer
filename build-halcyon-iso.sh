@@ -94,6 +94,10 @@ msg "Building gnu-compat..."
 (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
     pkg halcyon-extra/gnu-compat)
 
+msg "Building Halcyon base-files (PATH overlay)..."
+(cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
+    pkg halcyon-core/base-files)
+
 msg "Building Halcyon repository packages..."
 (cd "$CPORTS" && ./cbuild -b "$BLDROOT" -j "$JOBS" \
     pkg halcyon-core/halcyon-repo-core)

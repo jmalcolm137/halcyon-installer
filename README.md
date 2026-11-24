@@ -42,7 +42,8 @@ SerenityOS wallpaper (`serenity-lagom` provides the wallpaper resource).
 `uutils-coreutils` installs the Rust utilities in `/usr/gnulib`, and
 `uutils-findutils` puts `find`, `locate`, `updatedb` and `xargs` alongside
 them. `gnu-compat` pulls in the GNU tools uutils does not implement and links
-them into the same directory. `base-files` puts `/usr/gnulib` on `PATH` after
+them into `/usr/gnubin`. Halcyon's `base-files` (built from `halcyon-core`,
+overriding the Chimera one) puts `/usr/gnulib` on `PATH` after
 `/usr/local/bin` and before `/usr/bin`, for login and interactive shells. The
 live user keeps `/bin/sh` (mksh). The live overlay installs `/etc/mkshrc`,
 which sources the `base-files` PATH fixup; the packages themselves remain
