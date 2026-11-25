@@ -95,7 +95,7 @@ case "$IMAGE" in
         # pick sddm-default-kwin, which pulls in Plasma/KDE even though the
         # image does not ask for plasma-desktop.
         #
-        # gnu-compat installs the uutils userland in /usr/gnulib (with the GNU
+        # gnu-compat installs the uutils userland in /usr/gnubin (with the GNU
         # tools uutils does not implement); base-files puts that directory on
         # PATH. The live overlay adds /etc/mkshrc and live-sh, which set ENV
         # and exec /bin/sh, so the SDE Terminal sources the base-files PATH

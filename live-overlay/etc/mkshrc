@@ -1,6 +1,6 @@
 # Live-session mksh rc. pam_env sets ENV=/etc/mkshrc for the sddm session, and
 # the live-sh wrapper sets it for the SDE Terminal. Apply the base-files PATH
-# fixup so the interactive shell gets /usr/gnulib like a login shell. This glue
+# fixup so the interactive shell gets /usr/gnubin like a login shell. This glue
 # stays in the live image so the packages remain usable on a normal Chimera
 # installation.
 if [ -r /etc/profile.path ]; then

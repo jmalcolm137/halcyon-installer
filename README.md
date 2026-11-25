@@ -39,11 +39,11 @@ pkexec then fails with "Message recipient disconnected from message bus without
 replying". The rule matches `subject.local`, `subject.active` and
 `subject.user` instead. The SDE session defaults to the `blue-grid.png`
 SerenityOS wallpaper (`serenity-lagom` provides the wallpaper resource).
-`uutils-coreutils` installs the Rust utilities in `/usr/gnulib`, and
+`uutils-coreutils` installs the Rust utilities in `/usr/gnubin`, and
 `uutils-findutils` puts `find`, `locate`, `updatedb` and `xargs` alongside
 them. `gnu-compat` pulls in the GNU tools uutils does not implement and links
 them into `/usr/gnubin`. Halcyon's `base-files` (built from `halcyon-core`,
-overriding the Chimera one) puts `/usr/gnulib` on `PATH` after
+overriding the Chimera one) puts `/usr/gnubin` on `PATH` after
 `/usr/local/bin` and before `/usr/bin`, for login and interactive shells. The
 live user keeps `/bin/sh` (mksh). The live overlay installs `/etc/mkshrc`,
 which sources the `base-files` PATH fixup; the packages themselves remain
