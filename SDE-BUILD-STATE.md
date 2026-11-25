@@ -1,5 +1,38 @@
 # SDE ISO build state
 
+## 0.1.20 (installer repository-file fix)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261124-sde-r3.iso
+```
+
+- Size: 2097977344 bytes (2.0 GiB)
+- SHA-256: 06e96b59f78531c0dcfbf60b01ce9b7237e84b9a9dbf41db7efdb3191b05c258
+- Volume ID: HALCYON_LIVE
+- Release tag: 0.1.20
+- GitHub release asset headroom: 49,506,304 bytes under the 2 GiB limit.
+
+- Fixes `halcyon-setup` failing with "The target is missing the
+  20-halcyon-core.list repository file." `apk add` does not restore files
+  of a package that is already in the target database, so a live copy
+  without `/etc/apk/repositories.d/20-halcyon-core.list` or
+  `21-halcyon-extra.list` stayed broken. The installer now writes the
+  missing lists before installing `halcyon-repo-core`/`halcyon-repo-extra`,
+  which also lets apk reach the repository when the packages are absent.
+- `halcyon-setup` 0.1.0-r19, built from the current source commit; the
+  wizard-polish patch is gone because that work is merged. `libwm.so` is
+  added to `ignore_shlibs` (it comes from `serenity-lagom`).
+- The online `halcyon-core` repository was updated with `halcyon-setup`
+  0.1.0-r19.
+
+- Verified in QEMU/KVM with a full GUI installation to a blank disk: the
+  "Configuring the package repositories" step passes, the installation
+  completes, and the installed system's `/etc/apk/repositories.d` contains
+  `00-chimera.list`, `20-halcyon-core.list` and `21-halcyon-extra.list`.
+  Also verified separately that `apk add` leaves the files missing when
+  they are deleted from a target, and that writing them restores the
+  expected configuration.
+
 ## 0.1.19 (uutils overlay corrected to /usr/gnubin)
 
 ```
