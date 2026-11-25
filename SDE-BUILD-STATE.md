@@ -1,5 +1,36 @@
 # SDE ISO build state
 
+## 0.1.19 (uutils overlay corrected to /usr/gnubin)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261124-sde-r2.iso
+```
+
+- Size: 2097977344 bytes (2.0 GiB)
+- SHA-256: 89c680d5e5025caf3ac8f12db9871baa11882f0ac0ab46981b705604d35177e7
+- Volume ID: HALCYON_LIVE
+- Release tag: 0.1.19
+- GitHub release asset headroom: 49,506,304 bytes under the 2 GiB limit.
+
+- Corrects the overlay directory from `/usr/gnulib` to `/usr/gnubin`.
+  `uutils-coreutils` 0.13.0-r1 and `uutils-findutils` 0.11.0-r1 install the
+  Rust utilities there, and `gnu-compat` 0.1.0-r2 adds its GNU links to the
+  same directory.
+- `base-files` 0.2-r3 puts `/usr/gnubin` on PATH after `/usr/local/bin` and
+  before `/usr/bin`.
+- No `/usr/bin/gnu` or `/usr/gnulib` remains.
+- The online `halcyon-core`/`halcyon-extra` repositories were updated with
+  `base-files` 0.2-r3, `uutils-coreutils` 0.13.0-r1, `uutils-findutils`
+  0.11.0-r1 and `gnu-compat` 0.1.0-r2 before this release.
+- Supersedes 0.1.18, which used `/usr/gnulib`.
+
+- Verified in QEMU/KVM: `PATH=/usr/local/bin:/usr/gnubin:/usr/bin`; `ls`,
+  `find`, `awk` and `tar` all resolve to `/usr/gnubin`; `ls --version` is
+  `uutils coreutils 0.13.0`, `find --version` is `0.11.0`; `/usr/bin/gnu` and
+  `/usr/gnulib` do not exist; the installed packages are `base-files`
+  0.2-r3, `uutils-coreutils` 0.13.0-r1, `uutils-findutils` 0.11.0-r1 and
+  `gnu-compat` 0.1.0-r2.
+
 ## 0.1.18 (uutils overlay in /usr/gnulib)
 
 ```
