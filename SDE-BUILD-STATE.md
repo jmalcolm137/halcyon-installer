@@ -1,5 +1,34 @@
 # SDE ISO build state
 
+## 0.1.22 (installer dialog and table layout fix)
+
+```
+/home/jmalcolm/Projects/halcyon-installer/halcyon-linux-x86_64-LIVE-20261126-sde-r2.iso
+```
+
+- Size: 2103265280 bytes (2.0 GiB)
+- SHA-256: 9e5dd99b4bbf5301470545d40d06dc6d2024d755ba4fc574007277cfd807302f
+- Volume ID: HALCYON_LIVE
+- Release tag: 0.1.22
+- GitHub release asset headroom: 44,218,368 bytes under the 2 GiB limit.
+
+- Fixes the Accounts page Add User button: the user table grew after its
+  model was populated, which moved the buttons below it, and the moved
+  widgets' hit areas no longer matched where they were painted (clicks had
+  to land about 50px below the button). The user and mount tables now have
+  fixed heights so the rows below them stay put.
+- Fixes dialogs opening behind the wizard. The compositor does not reliably
+  keep a new dialog above its parent (the click can re-raise the parent),
+  which left the dialog hidden and the wizard looking frozen. The Add User
+  dialog and warning boxes are marked always-on-top once shown.
+- `halcyon-setup` 0.1.0-r23.
+- The online `halcyon-core` repository was updated with `halcyon-setup`
+  0.1.0-r23.
+
+- Verified in QEMU/KVM: clicking the drawn Add User button opens the dialog
+  in front (one taskbar entry) on the Accounts page; the Mount points page
+  lays out correctly with its fixed-height table.
+
 ## 0.1.20 (installer repository-file fix)
 
 ```
